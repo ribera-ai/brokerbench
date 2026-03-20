@@ -18,7 +18,8 @@ from rich.console import Console
 from rich.table import Table
 
 from brokerbench.harness.constants import DEFAULT_DOMAIN_WEIGHTS, Domain, ResolutionStatus
-from brokerbench.harness.grading import DomainResult, EvalResult, InstanceResult
+from brokerbench.harness.grading import DomainResult, EvalResult, InstanceResult, ScoreDetail
+from brokerbench.harness.reporting import generate_markdown_report
 from brokerbench.harness.types import Instance, Prediction
 
 console = Console()
@@ -105,7 +106,6 @@ def grade_instance(instance: Instance, prediction: Prediction) -> InstanceResult
                 break
 
     is_correct = pred_answer == expected_answer
-    from brokerbench.harness.grading import ScoreDetail
 
     scores.append(
         ScoreDetail(
@@ -293,7 +293,7 @@ def _save_report(result: EvalResult, run_id: str) -> None:
     # Markdown report
     md_path = output_dir / "report.md"
     with open(md_path, "w") as f:
-        f.write(result.summary())
+        f.write(generate_markdown_report(result))
     console.print(f"Markdown report saved to {md_path}")
 
 

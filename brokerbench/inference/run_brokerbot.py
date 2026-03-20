@@ -131,8 +131,8 @@ def run_brokerbot(
                     reasoning=raw_output,
                     raw_output=raw_output,
                     metadata={
-                        "usage": usage,
-                        "steps": steps,
+                        "usage": json.dumps(usage),
+                        "steps": str(steps),
                     },
                 )
             except (URLError, TimeoutError, json.JSONDecodeError) as e:
