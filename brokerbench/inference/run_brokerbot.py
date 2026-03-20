@@ -2,7 +2,7 @@
 
 Usage:
     python -m brokerbench.inference.run_brokerbot \
-        --agent_url http://localhost:3000/api/generate \
+        --agent_url http://localhost:4100/api/generate \
         --team_id clxxxxxxxxxxxxxxxxx \
         --auth_cookie "better-auth.session_token=..." \
         --dataset all \
@@ -185,8 +185,8 @@ def main() -> None:
     parser.add_argument(
         "--agent_url",
         type=str,
-        default="http://localhost:3000/api/generate",
-        help="URL of the /api/generate endpoint (default: http://localhost:3000/api/generate).",
+        default="http://localhost:4100/api/generate",
+        help="URL of the /api/generate endpoint (default: http://localhost:4100/api/generate).",
     )
     parser.add_argument(
         "--team_id",
