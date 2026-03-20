@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from brokerbench.harness.grading import ScoreDetail
 from brokerbench.harness.types import Instance, Prediction
+from brokerbench.harness.utils import extract_mcq_answer
 
 
 def score_licensing_mcq(instance: Instance, prediction: Prediction) -> ScoreDetail:
@@ -30,10 +31,9 @@ def score_licensing_mcq(instance: Instance, prediction: Prediction) -> ScoreDeta
 
     # Try to extract a single letter answer from longer responses
     if len(predicted) > 1 and instance.choices:
-        for char in predicted:
-            if char in "ABCD":
-                predicted = char
-                break
+        extracted = extract_mcq_answer(prediction.prediction)
+        if extracted:
+            predicted = extracted
 
     is_correct = predicted == expected
 

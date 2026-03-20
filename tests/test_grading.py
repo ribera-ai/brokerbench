@@ -63,6 +63,16 @@ class TestGradeInstance:
         result = grade_instance(instance, prediction)
         assert result.status == ResolutionStatus.RESOLVED
 
+    def test_does_not_extract_from_prose(self) -> None:
+        """Ensure letters in English words don't get extracted as the answer."""
+        instance = _make_instance(expected="B")
+        prediction = _make_prediction(
+            prediction="According to the inspection contingency, the answer is B."
+        )
+        result = grade_instance(instance, prediction)
+        assert result.status == ResolutionStatus.RESOLVED
+        assert result.aggregate_score == 1.0
+
 
 class TestComputeDomainResults:
     def test_single_domain(self) -> None:

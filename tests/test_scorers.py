@@ -71,6 +71,21 @@ class TestLicensingMCQScorer:
         result = score_licensing_mcq(instance, prediction)
         assert result.score == 0.0
 
+    def test_does_not_extract_from_prose(self) -> None:
+        """Ensure letters embedded in English words are not extracted."""
+        instance = _make_mcq_instance(expected="B")
+        prediction = _make_prediction(
+            prediction="According to the inspection contingency, the answer is B."
+        )
+        result = score_licensing_mcq(instance, prediction)
+        assert result.score == 1.0
+
+    def test_answer_is_pattern(self) -> None:
+        instance = _make_mcq_instance(expected="C")
+        prediction = _make_prediction(prediction="Based on my analysis, the answer is C.")
+        result = score_licensing_mcq(instance, prediction)
+        assert result.score == 1.0
+
 
 # --- Compliance Flag Scorer ---
 

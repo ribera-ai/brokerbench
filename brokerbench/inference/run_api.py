@@ -18,6 +18,7 @@ from rich.console import Console
 from tqdm import tqdm
 
 from brokerbench.harness.types import Instance, Prediction
+from brokerbench.harness.utils import extract_mcq_answer
 from brokerbench.inference import build_prompt, load_instances
 
 console = Console()
@@ -73,10 +74,9 @@ def run_openai(
                 # Extract answer letter for MCQ
                 answer = raw_output
                 if instance.choices:
-                    for char in raw_output.strip():
-                        if char.upper() in "ABCD":
-                            answer = char.upper()
-                            break
+                    extracted = extract_mcq_answer(raw_output)
+                    if extracted:
+                        answer = extracted
 
                 pred = Prediction(
                     instance_id=instance.instance_id,
@@ -153,10 +153,9 @@ def run_anthropic(
                 # Extract answer letter for MCQ
                 answer = raw_output
                 if instance.choices:
-                    for char in raw_output.strip():
-                        if char.upper() in "ABCD":
-                            answer = char.upper()
-                            break
+                    extracted = extract_mcq_answer(raw_output)
+                    if extracted:
+                        answer = extracted
 
                 pred = Prediction(
                     instance_id=instance.instance_id,

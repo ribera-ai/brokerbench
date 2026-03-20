@@ -21,6 +21,7 @@ from brokerbench.harness.constants import DEFAULT_DOMAIN_WEIGHTS, Domain, Resolu
 from brokerbench.harness.grading import DomainResult, EvalResult, InstanceResult, ScoreDetail
 from brokerbench.harness.reporting import generate_markdown_report
 from brokerbench.harness.types import Instance, Prediction
+from brokerbench.harness.utils import extract_mcq_answer
 
 console = Console()
 
@@ -99,11 +100,9 @@ def grade_instance(instance: Instance, prediction: Prediction) -> InstanceResult
 
     # For MCQ, extract just the letter if the prediction includes explanation
     if instance.choices and len(pred_answer) > 1:
-        # Try to extract the first letter (A, B, C, D)
-        for char in pred_answer:
-            if char in "ABCD":
-                pred_answer = char
-                break
+        extracted = extract_mcq_answer(prediction.prediction)
+        if extracted:
+            pred_answer = extracted
 
     is_correct = pred_answer == expected_answer
 
