@@ -4,7 +4,7 @@ Usage:
     python -m brokerbench.inference.run_brokerbot \
         --agent_url http://localhost:4100/api/generate \
         --team_id clxxxxxxxxxxxxxxxxx \
-        --auth_cookie "better-auth.session_token=..." \
+        --auth_token "bench-test-token-12345" \
         --dataset all \
         --output_file predictions/brokerbot.jsonl
 """
@@ -23,36 +23,9 @@ from rich.console import Console
 from tqdm import tqdm
 
 from brokerbench.harness.types import Instance, Prediction
+from brokerbench.inference import build_prompt, load_instances
 
 console = Console()
-
-
-def build_prompt(instance: Instance) -> str:
-    """Build a prompt from a benchmark instance.
-
-    Formats the question with optional context and multiple-choice options.
-
-    Args:
-        instance: The benchmark instance to create a prompt for.
-
-    Returns:
-        Formatted prompt string.
-    """
-    parts = [instance.question]
-
-    if instance.context:
-        parts.insert(0, f"Context:\n{instance.context}\n")
-
-    if instance.choices:
-        parts.append("\nOptions:")
-        for choice in instance.choices:
-            parts.append(f"  {choice}")
-        parts.append(
-            "\nRespond with ONLY the letter of the correct answer "
-            "(A, B, C, or D), followed by a brief explanation."
-        )
-
-    return "\n".join(parts)
 
 
 def run_brokerbot(
@@ -60,7 +33,7 @@ def run_brokerbot(
     agent_url: str,
     team_id: str,
     output_path: Path,
-    auth_cookie: str | None = None,
+    auth_token: str | None = None,
     template: str = "brokerbot",
 ) -> list[Prediction]:
     """Run inference against BrokerBot's /api/generate endpoint.
@@ -73,8 +46,8 @@ def run_brokerbot(
         agent_url: URL of the /api/generate endpoint.
         team_id: Team ID to scope the request.
         output_path: Path to write prediction JSONL.
-        auth_cookie: Session cookie for authentication
-            (e.g. "better-auth.session_token=...").
+        auth_token: Bearer token for authentication (raw session token
+            stored in the Session table).
         template: Agent type to use (default: "brokerbot").
 
     Returns:
@@ -100,8 +73,8 @@ def run_brokerbot(
                 headers: dict[str, str] = {
                     "Content-Type": "application/json",
                 }
-                if auth_cookie:
-                    headers["Cookie"] = auth_cookie
+                if auth_token:
+                    headers["Authorization"] = f"Bearer {auth_token}"
 
                 req = Request(
                     agent_url,
@@ -152,33 +125,6 @@ def run_brokerbot(
     return predictions
 
 
-def load_instances(dataset_path: str) -> list[Instance]:
-    """Load instances from a JSONL file path or 'all' for built-in datasets."""
-    if dataset_path == "all":
-        datasets_dir = Path(__file__).parent.parent / "resources" / "datasets"
-        instances: list[Instance] = []
-        for path in sorted(datasets_dir.glob("*.jsonl")):
-            with open(path) as f:
-                for line in f:
-                    line = line.strip()
-                    if line:
-                        instances.append(Instance(**json.loads(line)))
-        return instances
-
-    path = Path(dataset_path)
-    if not path.exists():
-        console.print(f"[red]Dataset not found: {path}[/red]")
-        sys.exit(1)
-
-    instances = []
-    with open(path) as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                instances.append(Instance(**json.loads(line)))
-    return instances
-
-
 def main() -> None:
     """CLI entry point for BrokerBot inference."""
     parser = argparse.ArgumentParser(description="Run BrokerBot against the BrokerBench benchmark.")
@@ -195,13 +141,13 @@ def main() -> None:
         help="Team ID for the BrokerBot request (or set BROKERBOT_TEAM_ID env var).",
     )
     parser.add_argument(
-        "--auth_cookie",
+        "--auth_token",
         type=str,
-        default=os.environ.get("BROKERBOT_AUTH_COOKIE", ""),
+        default=os.environ.get("BROKERBOT_AUTH_TOKEN", ""),
         help=(
-            "Session cookie for authentication "
-            '(e.g. "better-auth.session_token=..."), '
-            "or set BROKERBOT_AUTH_COOKIE env var."
+            "Bearer token for authentication "
+            "(raw session token from the Session table), "
+            "or set BROKERBOT_AUTH_TOKEN env var."
         ),
     )
     parser.add_argument(
@@ -231,10 +177,10 @@ def main() -> None:
     instances = load_instances(args.dataset)
     console.print(f"Loaded {len(instances)} instances")
 
-    auth_cookie = args.auth_cookie if args.auth_cookie else None
-    if not auth_cookie:
+    auth_token = args.auth_token if args.auth_token else None
+    if not auth_token:
         console.print(
-            "[yellow]Warning: No auth cookie provided. "
+            "[yellow]Warning: No auth token provided. "
             "Requests may fail if the endpoint requires authentication.[/yellow]"
         )
 
@@ -243,7 +189,7 @@ def main() -> None:
         args.agent_url,
         args.team_id,
         args.output_file,
-        auth_cookie=auth_cookie,
+        auth_token=auth_token,
         template=args.template,
     )
     console.print(f"[green]Predictions written to {args.output_file}[/green]")

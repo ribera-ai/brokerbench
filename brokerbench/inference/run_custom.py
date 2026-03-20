@@ -25,7 +25,6 @@ Example:
 
 from __future__ import annotations
 
-import json
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -33,6 +32,7 @@ from rich.console import Console
 from tqdm import tqdm
 
 from brokerbench.harness.types import Instance, Prediction
+from brokerbench.inference import load_instances
 
 console = Console()
 
@@ -66,7 +66,7 @@ class CustomAgentAdapter(ABC):
         Returns:
             List of Prediction objects.
         """
-        instances = self._load_instances(dataset_path)
+        instances = load_instances(dataset_path)
         console.print(f"Loaded {len(instances)} instances")
 
         predictions: list[Prediction] = []
@@ -91,26 +91,3 @@ class CustomAgentAdapter(ABC):
 
         console.print(f"[green]Predictions written to {output_path}[/green]")
         return predictions
-
-    @staticmethod
-    def _load_instances(dataset_path: str) -> list[Instance]:
-        """Load instances from a JSONL file or all built-in datasets."""
-        if dataset_path == "all":
-            datasets_dir = Path(__file__).parent.parent / "resources" / "datasets"
-            instances: list[Instance] = []
-            for path in sorted(datasets_dir.glob("*.jsonl")):
-                with open(path) as f:
-                    for line in f:
-                        line = line.strip()
-                        if line:
-                            instances.append(Instance(**json.loads(line)))
-            return instances
-
-        path = Path(dataset_path)
-        instances = []
-        with open(path) as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    instances.append(Instance(**json.loads(line)))
-        return instances
