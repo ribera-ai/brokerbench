@@ -103,4 +103,4 @@ def get_sample_instances() -> list[Instance]:
     Returns:
         List of sample Instance objects.
     """
-    return SAMPLE_LICENSING_INSTANCES.copy()
+    return [instance.model_copy(deep=True) for instance in SAMPLE_LICENSING_INSTANCES]
