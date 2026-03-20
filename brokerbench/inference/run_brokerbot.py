@@ -1,8 +1,10 @@
-"""Run inference against BrokerBot via the monorepo's HTTP API.
+"""Run inference against BrokerBot via the monorepo's /api/generate endpoint.
 
 Usage:
     python -m brokerbench.inference.run_brokerbot \
-        --agent_url http://localhost:3000/api/agent \
+        --agent_url http://localhost:3000/api/generate \
+        --team_id clxxxxxxxxxxxxxxxxx \
+        --auth_cookie "better-auth.session_token=..." \
         --dataset all \
         --output_file predictions/brokerbot.jsonl
 """
@@ -11,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from urllib.error import URLError
@@ -24,20 +27,55 @@ from brokerbench.harness.types import Instance, Prediction
 console = Console()
 
 
+def build_prompt(instance: Instance) -> str:
+    """Build a prompt from a benchmark instance.
+
+    Formats the question with optional context and multiple-choice options.
+
+    Args:
+        instance: The benchmark instance to create a prompt for.
+
+    Returns:
+        Formatted prompt string.
+    """
+    parts = [instance.question]
+
+    if instance.context:
+        parts.insert(0, f"Context:\n{instance.context}\n")
+
+    if instance.choices:
+        parts.append("\nOptions:")
+        for choice in instance.choices:
+            parts.append(f"  {choice}")
+        parts.append(
+            "\nRespond with ONLY the letter of the correct answer "
+            "(A, B, C, or D), followed by a brief explanation."
+        )
+
+    return "\n".join(parts)
+
+
 def run_brokerbot(
     instances: list[Instance],
     agent_url: str,
+    team_id: str,
     output_path: Path,
+    auth_cookie: str | None = None,
+    template: str = "brokerbot",
 ) -> list[Prediction]:
-    """Run inference against BrokerBot's HTTP API.
+    """Run inference against BrokerBot's /api/generate endpoint.
 
-    Sends each instance as a chat message to the BrokerBot agent
-    and collects the response as a prediction.
+    Sends each instance as a message to the BrokerBot generate endpoint
+    and collects the non-streaming response as a prediction.
 
     Args:
         instances: List of benchmark instances to evaluate.
-        agent_url: URL of the BrokerBot agent API endpoint.
+        agent_url: URL of the /api/generate endpoint.
+        team_id: Team ID to scope the request.
         output_path: Path to write prediction JSONL.
+        auth_cookie: Session cookie for authentication
+            (e.g. "better-auth.session_token=...").
+        template: Agent type to use (default: "brokerbot").
 
     Returns:
         List of Prediction objects.
@@ -47,28 +85,36 @@ def run_brokerbot(
 
     with open(output_path, "w") as f:
         for instance in tqdm(instances, desc="Running BrokerBot"):
-            prompt = instance.question
-            if instance.choices:
-                prompt += "\n\nOptions:\n"
-                for choice in instance.choices:
-                    prompt += f"  {choice}\n"
-                prompt += (
-                    "\nRespond with ONLY the letter of the correct answer "
-                    "(A, B, C, or D), followed by a brief explanation."
-                )
+            prompt = build_prompt(instance)
 
             try:
-                payload = json.dumps({"message": prompt}).encode("utf-8")
+                payload = json.dumps(
+                    {
+                        "message": prompt,
+                        "teamId": team_id,
+                        "template": template,
+                        "persist": False,
+                    }
+                ).encode("utf-8")
+
+                headers: dict[str, str] = {
+                    "Content-Type": "application/json",
+                }
+                if auth_cookie:
+                    headers["Cookie"] = auth_cookie
+
                 req = Request(
                     agent_url,
                     data=payload,
-                    headers={"Content-Type": "application/json"},
+                    headers=headers,
                     method="POST",
                 )
-                with urlopen(req, timeout=60) as resp:
+                with urlopen(req, timeout=120) as resp:
                     response_data = json.loads(resp.read().decode("utf-8"))
 
-                raw_output = response_data.get("response", response_data.get("text", ""))
+                raw_output = response_data.get("text", "")
+                usage = response_data.get("usage", {})
+                steps = response_data.get("steps", 0)
 
                 # Extract answer letter for MCQ
                 answer = raw_output
@@ -84,6 +130,10 @@ def run_brokerbot(
                     prediction=answer,
                     reasoning=raw_output,
                     raw_output=raw_output,
+                    metadata={
+                        "usage": usage,
+                        "steps": steps,
+                    },
                 )
             except (URLError, TimeoutError, json.JSONDecodeError) as e:
                 console.print(f"[yellow]Error on {instance.instance_id}: {e}[/yellow]")
@@ -135,8 +185,30 @@ def main() -> None:
     parser.add_argument(
         "--agent_url",
         type=str,
-        required=True,
-        help="URL of the BrokerBot agent API endpoint.",
+        default="http://localhost:3000/api/generate",
+        help="URL of the /api/generate endpoint (default: http://localhost:3000/api/generate).",
+    )
+    parser.add_argument(
+        "--team_id",
+        type=str,
+        default=os.environ.get("BROKERBOT_TEAM_ID", ""),
+        help="Team ID for the BrokerBot request (or set BROKERBOT_TEAM_ID env var).",
+    )
+    parser.add_argument(
+        "--auth_cookie",
+        type=str,
+        default=os.environ.get("BROKERBOT_AUTH_COOKIE", ""),
+        help=(
+            "Session cookie for authentication "
+            '(e.g. "better-auth.session_token=..."), '
+            "or set BROKERBOT_AUTH_COOKIE env var."
+        ),
+    )
+    parser.add_argument(
+        "--template",
+        type=str,
+        default="brokerbot",
+        help="Agent type to use (default: brokerbot).",
     )
     parser.add_argument(
         "--dataset",
@@ -152,10 +224,28 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    if not args.team_id:
+        console.print("[red]--team_id is required (or set BROKERBOT_TEAM_ID env var)[/red]")
+        sys.exit(1)
+
     instances = load_instances(args.dataset)
     console.print(f"Loaded {len(instances)} instances")
 
-    run_brokerbot(instances, args.agent_url, args.output_file)
+    auth_cookie = args.auth_cookie if args.auth_cookie else None
+    if not auth_cookie:
+        console.print(
+            "[yellow]Warning: No auth cookie provided. "
+            "Requests may fail if the endpoint requires authentication.[/yellow]"
+        )
+
+    run_brokerbot(
+        instances,
+        args.agent_url,
+        args.team_id,
+        args.output_file,
+        auth_cookie=auth_cookie,
+        template=args.template,
+    )
     console.print(f"[green]Predictions written to {args.output_file}[/green]")
 
 
