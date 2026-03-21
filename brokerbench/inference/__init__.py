@@ -35,9 +35,15 @@ def load_instances(dataset_path: str) -> list[Instance]:
         return instances
 
     path = Path(dataset_path)
+    # If the path doesn't exist as-is, try resolving as a dataset name
     if not path.exists():
-        console.print(f"[red]Dataset not found: {path}[/red]")
-        sys.exit(1)
+        datasets_dir = Path(__file__).parent.parent / "resources" / "datasets"
+        resolved = datasets_dir / f"{dataset_path}.jsonl"
+        if resolved.exists():
+            path = resolved
+        else:
+            console.print(f"[red]Dataset not found: {path} (also tried {resolved})[/red]")
+            sys.exit(1)
 
     instances = []
     with open(path) as f:
@@ -69,9 +75,11 @@ def build_prompt(instance: Instance) -> str:
         parts.append("\nOptions:")
         for choice in instance.choices:
             parts.append(f"  {choice}")
+        labels = [chr(ord("A") + i) for i in range(len(instance.choices))]
+        label_str = ", ".join(labels[:-1]) + f", or {labels[-1]}" if len(labels) > 1 else labels[0]
         parts.append(
-            "\nRespond with ONLY the letter of the correct answer "
-            "(A, B, C, or D), followed by a brief explanation."
+            f"\nRespond with ONLY the letter of the correct answer ({label_str}), "
+            "followed by a brief explanation."
         )
     else:
         parts.append("\nProvide a clear, concise answer.")

@@ -28,9 +28,10 @@ jobs:
         run: pip install -e .
       - name: Detect provider from model name
         id: detect_provider
+        env:
+          MODEL_NAME: ${{ github.event.inputs.model_name || 'gpt-4o' }}
         run: |
-          MODEL="${{ github.event.inputs.model_name || 'gpt-4o' }}"
-          if echo "$MODEL" | grep -qiE '^(claude|anthropic)'; then
+          if echo "$MODEL_NAME" | grep -qiE '^(claude|anthropic)'; then
             echo "provider=anthropic" >> $GITHUB_OUTPUT
           else
             echo "provider=openai" >> $GITHUB_OUTPUT
@@ -39,18 +40,24 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODEL_NAME: ${{ github.event.inputs.model_name || 'gpt-4o' }}
+          DATASET: ${{ github.event.inputs.dataset || 'all' }}
+          PROVIDER: ${{ steps.detect_provider.outputs.provider }}
         run: |
           python -m brokerbench.inference.run_api \
-            --model_name "${{ github.event.inputs.model_name || 'gpt-4o' }}" \
-            --dataset "${{ github.event.inputs.dataset || 'all' }}" \
+            --model_name "$MODEL_NAME" \
+            --dataset "$DATASET" \
             --output_file predictions/latest.jsonl \
-            --provider "${{ steps.detect_provider.outputs.provider }}"
+            --provider "$PROVIDER"
       - name: Run evaluation
         run: |
           python -m brokerbench.harness.run_evaluation \
             --predictions_path predictions/latest.jsonl \
-            --dataset_name "${{ github.event.inputs.dataset || 'all' }}" \
-            --run_id "${{ github.run_id }}"
+            --dataset_name "$DATASET" \
+            --run_id "$RUN_ID"
+        env:
+          DATASET: ${{ github.event.inputs.dataset || 'all' }}
+          RUN_ID: ${{ github.run_id }}
       - name: Upload results
         uses: actions/upload-artifact@v4
         with:
