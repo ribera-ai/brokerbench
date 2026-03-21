@@ -31,6 +31,18 @@ def score_compliance_flag(instance: Instance, prediction: Prediction) -> ScoreDe
     expected_raw = instance.expected_answer.strip().lower()
     predicted_raw = prediction.prediction.strip().lower()
 
+    all_known_terms = positive_terms | negative_terms
+    if expected_raw not in all_known_terms:
+        return ScoreDetail(
+            scorer_name="compliance_flag_accuracy",
+            score=0.0,
+            metadata={
+                "predicted": predicted_raw,
+                "expected": expected_raw,
+                "error": "unrecognized_expected_answer_format",
+            },
+        )
+
     expected_positive = expected_raw in positive_terms
     predicted_positive = predicted_raw in positive_terms
     predicted_negative = predicted_raw in negative_terms

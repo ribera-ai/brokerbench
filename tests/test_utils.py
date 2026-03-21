@@ -36,17 +36,17 @@ class TestExtractMcqAnswer:
 
     # --- Prose that should NOT match embedded letters ---
 
-    def test_according_does_not_match_A(self) -> None:
+    def test_according_does_not_match_a(self) -> None:
         result = extract_mcq_answer(
             "According to the inspection contingency, the answer is B."
         )
         assert result == "B"
 
-    def test_based_does_not_match_B(self) -> None:
+    def test_based_does_not_match_b(self) -> None:
         result = extract_mcq_answer("Based on my analysis, the answer is C.")
         assert result == "C"
 
-    def test_due_does_not_match_D(self) -> None:
+    def test_due_does_not_match_d(self) -> None:
         result = extract_mcq_answer("Due to the contract terms, the answer is A.")
         assert result == "A"
 

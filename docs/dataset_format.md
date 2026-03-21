@@ -45,7 +45,7 @@ Each line in a dataset JSONL file represents one benchmark instance:
 | `source_outline` | string | Reference to source content outline |
 | `difficulty` | string | `easy`, `medium`, or `hard` |
 | `context` | string | Additional context (contract excerpt, loan data) |
-| `metadata` | object | Arbitrary key-value pairs |
+| `metadata` | dict[str, str] | String key-value pairs for additional data |
 
 ## Prediction Schema
 
@@ -74,7 +74,7 @@ Each line in a dataset JSONL file represents one benchmark instance:
 |-------|------|-------------|
 | `reasoning` | string | Chain-of-thought or explanation |
 | `raw_output` | string | Full raw model output |
-| `metadata` | object | Arbitrary key-value pairs |
+| `metadata` | dict[str, str] | String key-value pairs for additional data |
 
 ## Dataset Files
 

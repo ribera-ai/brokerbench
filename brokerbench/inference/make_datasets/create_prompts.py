@@ -30,10 +30,15 @@ def create_mcq_prompt(instance: Instance) -> str:
         for choice in instance.choices:
             parts.append(f"  {choice}")
 
-    parts.append(
-        "\nAnswer with the letter of the correct option (A, B, C, or D), "
-        "then explain your reasoning."
-    )
+    if instance.choices:
+        labels = [chr(ord("A") + i) for i in range(len(instance.choices))]
+        label_str = ", ".join(labels[:-1]) + f", or {labels[-1]}" if len(labels) > 1 else labels[0]
+        parts.append(
+            f"\nAnswer with the letter of the correct option ({label_str}), "
+            "then explain your reasoning."
+        )
+    else:
+        parts.append("\nAnswer the question, then explain your reasoning.")
 
     return "\n".join(parts)
 

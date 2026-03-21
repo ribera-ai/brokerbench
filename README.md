@@ -85,6 +85,7 @@ python -m brokerbench.inference.run_brokerbot \
 Implement the `CustomAgentAdapter` interface:
 
 ```python
+from pathlib import Path
 from brokerbench.inference.run_custom import CustomAgentAdapter
 from brokerbench.harness.types import Instance, Prediction
 
