@@ -31,7 +31,9 @@ jobs:
         env:
           MODEL_NAME: ${{ github.event.inputs.model_name || 'gpt-4o' }}
         run: |
-          if echo "$MODEL_NAME" | grep -qiE '^(claude|anthropic)'; then
+          if echo "$MODEL_NAME" | grep -qE '/'; then
+            echo "provider=openrouter" >> $GITHUB_OUTPUT
+          elif echo "$MODEL_NAME" | grep -qiE '^(claude|anthropic)'; then
             echo "provider=anthropic" >> $GITHUB_OUTPUT
           else
             echo "provider=openai" >> $GITHUB_OUTPUT
@@ -40,6 +42,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           MODEL_NAME: ${{ github.event.inputs.model_name || 'gpt-4o' }}
           DATASET: ${{ github.event.inputs.dataset || 'all' }}
           PROVIDER: ${{ steps.detect_provider.outputs.provider }}

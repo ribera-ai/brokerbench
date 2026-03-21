@@ -181,6 +181,90 @@ def run_anthropic(
     return predictions
 
 
+def run_openrouter(
+    instances: list[Instance],
+    model_name: str,
+    output_path: Path,
+) -> list[Prediction]:
+    """Run inference using the OpenRouter API.
+
+    OpenRouter uses the OpenAI SDK with a custom base URL.
+
+    Args:
+        instances: List of benchmark instances to evaluate.
+        model_name: OpenRouter model identifier (e.g. 'openai/gpt-4o',
+            'anthropic/claude-3-sonnet').
+        output_path: Path to write prediction JSONL.
+
+    Returns:
+        List of Prediction objects.
+    """
+    try:
+        from openai import OpenAI
+    except ImportError:
+        console.print("[red]openai package not installed. Run: pip install openai[/red]")
+        sys.exit(1)
+
+    client = OpenAI(
+        api_key=os.environ.get("OPENROUTER_API_KEY", ""),
+        base_url="https://openrouter.ai/api/v1",
+    )
+    predictions: list[Prediction] = []
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path, "w") as f:
+        for instance in tqdm(instances, desc=f"Running {model_name} (OpenRouter)"):
+            prompt = build_prompt(instance)
+            try:
+                response = client.chat.completions.create(
+                    model=model_name,
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": (
+                                "You are a knowledgeable real estate professional "
+                                "taking an evaluation. Answer accurately and concisely."
+                            ),
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=0,
+                    max_tokens=1024,
+                )
+                raw_output = response.choices[0].message.content or ""
+
+                # Extract answer letter for MCQ
+                answer = raw_output
+                if instance.choices:
+                    extracted = extract_mcq_answer(raw_output)
+                    if extracted:
+                        answer = extracted
+
+                pred = Prediction(
+                    instance_id=instance.instance_id,
+                    model_name_or_path=model_name,
+                    prediction=answer,
+                    reasoning=raw_output,
+                    raw_output=raw_output,
+                )
+            except Exception as e:
+                console.print(f"[yellow]Error on {instance.instance_id}: {e}[/yellow]")
+                pred = Prediction(
+                    instance_id=instance.instance_id,
+                    model_name_or_path=model_name,
+                    prediction="",
+                    reasoning="",
+                    raw_output=str(e),
+                    metadata={"error": str(e)},
+                )
+
+            predictions.append(pred)
+            f.write(pred.model_dump_json() + "\n")
+
+    return predictions
+
+
 def main() -> None:
     """CLI entry point for API-based inference."""
     parser = argparse.ArgumentParser(
@@ -190,7 +274,8 @@ def main() -> None:
         "--model_name",
         type=str,
         required=True,
-        help="Model identifier (e.g. 'gpt-4o', 'claude-3-sonnet-20240229').",
+        help="Model identifier (e.g. 'gpt-4o', 'claude-3-sonnet-20240229',"
+        " 'openai/gpt-4o' for OpenRouter).",
     )
     parser.add_argument(
         "--dataset",
@@ -208,7 +293,7 @@ def main() -> None:
         "--provider",
         type=str,
         default="openai",
-        choices=["openai", "anthropic"],
+        choices=["openai", "anthropic", "openrouter"],
         help="API provider to use (default: openai).",
     )
     args = parser.parse_args()
@@ -220,6 +305,8 @@ def main() -> None:
         run_openai(instances, args.model_name, args.output_file)
     elif args.provider == "anthropic":
         run_anthropic(instances, args.model_name, args.output_file)
+    elif args.provider == "openrouter":
+        run_openrouter(instances, args.model_name, args.output_file)
 
     console.print(f"[green]Predictions written to {args.output_file}[/green]")
 

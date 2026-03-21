@@ -21,12 +21,19 @@ git clone https://github.com/ribera-ai/brokerbench.git
 cd brokerbench
 pip install -e .
 
-# Run inference against a model
+# Run inference against a model (OpenAI, Anthropic, or OpenRouter)
 python -m brokerbench.inference.run_api \
     --model_name gpt-4o \
     --dataset all \
     --output_file predictions/gpt-4o.jsonl \
     --provider openai
+
+# Or use OpenRouter to access any model
+OPENROUTER_API_KEY=sk-or-... python -m brokerbench.inference.run_api \
+    --model_name openai/gpt-4o \
+    --dataset all \
+    --output_file predictions/gpt-4o-or.jsonl \
+    --provider openrouter
 
 # Evaluate predictions
 python -m brokerbench.harness.run_evaluation \
