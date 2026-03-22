@@ -301,8 +301,7 @@ def run_google(
                     model=model_name,
                     contents=(
                         "You are a knowledgeable real estate professional "
-                        "taking an evaluation. Answer accurately and concisely.\n\n"
-                        + prompt
+                        "taking an evaluation. Answer accurately and concisely.\n\n" + prompt
                     ),
                     config={
                         "temperature": 0,
