@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       model_name:
-        description: "Model to benchmark (e.g. gpt-4o, claude-3-sonnet)"
+        description: "Model to benchmark (e.g. gpt-4o, claude-3-sonnet, gemini-2.5-pro)"
         required: true
         default: "gpt-4o"
       dataset:
@@ -35,6 +35,8 @@ jobs:
             echo "provider=openrouter" >> $GITHUB_OUTPUT
           elif echo "$MODEL_NAME" | grep -qiE '^(claude|anthropic)'; then
             echo "provider=anthropic" >> $GITHUB_OUTPUT
+          elif echo "$MODEL_NAME" | grep -qiE '^gemini'; then
+            echo "provider=google" >> $GITHUB_OUTPUT
           else
             echo "provider=openai" >> $GITHUB_OUTPUT
           fi
@@ -42,6 +44,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           MODEL_NAME: ${{ github.event.inputs.model_name || 'gpt-4o' }}
           DATASET: ${{ github.event.inputs.dataset || 'all' }}
