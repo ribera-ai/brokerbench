@@ -139,7 +139,7 @@ _TOPIC_I: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_property_characteristics",
         question=(
-            "A property owner grants a conservation easement to a land trust,"
+            "A property owner grants a conservation easement to a land trust, "
             "permanently restricting development on 50 acres. What type of easement "
             "is this?"
         ),
@@ -465,7 +465,7 @@ _TOPIC_III: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="property_value_and_appraisal",
         question=(
-            "Which economic principle explains why adding a swimming pool worth"
+            "Which economic principle explains why adding a swimming pool worth "
             "$50,000 to a modest home in a declining neighborhood may only increase "
             "the home's value by $10,000?"
         ),
@@ -491,7 +491,7 @@ _TOPIC_III: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="property_value_and_appraisal",
         question=(
-            "An appraiser identifies three comparable sales: $310,000, $325,000,"
+            "An appraiser identifies three comparable sales: $310,000, $325,000, "
             "and $340,000. Comparable 1 has a smaller lot and needs a +$15,000 "
             "adjustment. Comparable 2 needs no adjustments. Comparable 3 has an "
             "extra bathroom requiring a -$10,000 adjustment. What is the indicated "
@@ -565,7 +565,7 @@ _TOPIC_III: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="property_value_and_appraisal",
         question=(
-            "Which appraisal approach is most appropriate for valuing a unique,"
+            "Which appraisal approach is most appropriate for valuing a unique, "
             "owner-occupied commercial property with no recent comparable sales?"
         ),
         choices=[
@@ -592,7 +592,7 @@ _TOPIC_III: list[Instance] = [
         subdomain="property_value_and_appraisal",
         question=(
             "An appraiser is valuing a 20-year-old office building. The replacement "
-            "cost new is $2,000,000. Physical deterioration is estimated at 15%,"
+            "cost new is $2,000,000. Physical deterioration is estimated at 15%, "
             "functional obsolescence at 5%, and external obsolescence at 3%. The "
             "land value is $500,000. What is the indicated value?"
         ),
@@ -720,7 +720,7 @@ _TOPIC_IV: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="contracts_and_agency",
         question=(
-            "A seller lists their home at $450,000. A buyer submits an offer at"
+            "A seller lists their home at $450,000. A buyer submits an offer at "
             "$420,000. The seller responds with a counter-offer at $440,000. Which "
             "statement is TRUE?"
         ),
@@ -1508,7 +1508,7 @@ _TOPIC_VII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="financing_and_settlement",
         question=(
-            "A borrower has a TILA-disclosed APR of 6.75% on a loan with a 6.25%"
+            "A borrower has a TILA-disclosed APR of 6.75% on a loan with a 6.25% "
             "note rate. The difference is MOST likely due to:"
         ),
         choices=[
