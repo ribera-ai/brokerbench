@@ -20,8 +20,8 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="offer_and_negotiation",
         question=(
-            "A buyer submits an offer with a 72-hour acceptance deadline. The"
-            "seller's agent receives the offer on Monday at 2 PM. By what day and"
+            "A buyer submits an offer with a 72-hour acceptance deadline. The "
+            "seller's agent receives the offer on Monday at 2 PM. By what day and "
             "time must the seller respond to keep the offer alive?"
         ),
         choices=[
@@ -89,7 +89,7 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="escrow_and_closing",
         question=(
-            "At closing, which document transfers ownership of real property from"
+            "At closing, which document transfers ownership of real property from "
             "the seller to the buyer?"
         ),
         choices=[
@@ -114,7 +114,7 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="contingency_management",
         question=(
-            "A buyer's financing contingency expires in 21 days but their lender"
+            "A buyer's financing contingency expires in 21 days but their lender "
             "needs 30 days. The buyer's agent should:"
         ),
         choices=[
@@ -165,7 +165,7 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         subdomain="timeline_coordination",
         question=(
             "A transaction coordinator discovers that the buyer's home inspection,"
-            "appraisal, and loan approval are all scheduled for the same week, two"
+            "appraisal, and loan approval are all scheduled for the same week, two "
             "weeks before closing. What is the PRIMARY risk?"
         ),
         choices=[
@@ -242,8 +242,8 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="post_closing",
         question=(
-            "A buyer discovers a roof leak three weeks after closing that was not"
-            "disclosed by the seller. The buyer's agent had no knowledge of the"
+            "A buyer discovers a roof leak three weeks after closing that was not "
+            "disclosed by the seller. The buyer's agent had no knowledge of the "
             "leak. Which statement is MOST accurate?"
         ),
         choices=[
@@ -272,7 +272,7 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="offer_and_negotiation",
         question=(
-            "A seller accepts an offer but fails to initial a counter-offer"
+            "A seller accepts an offer but fails to initial a counter-offer "
             "addendum changing the closing date. Is there a binding contract?"
         ),
         choices=[
@@ -322,9 +322,9 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="contingency_management",
         question=(
-            "A home inspection reveals knob-and-tube wiring throughout a 1920s"
-            "home. The buyer requests the seller replace all wiring. The seller"
-            "refuses. Under a typical inspection contingency, what are the buyer's"
+            "A home inspection reveals knob-and-tube wiring throughout a 1920s "
+            "home. The buyer requests the seller replace all wiring. The seller "
+            "refuses. Under a typical inspection contingency, what are the buyer's "
             "options?"
         ),
         choices=[
@@ -350,9 +350,9 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="timeline_coordination",
         question=(
-            "A loan officer informs the buyer's agent that the clear-to-close has"
-            "been issued, but the closing disclosure has not yet been delivered to"
-            "the buyer. Closing is scheduled for tomorrow. Can the transaction"
+            "A loan officer informs the buyer's agent that the clear-to-close has "
+            "been issued, but the closing disclosure has not yet been delivered to "
+            "the buyer. Closing is scheduled for tomorrow. Can the transaction "
             "close on time?"
         ),
         choices=[
@@ -380,7 +380,7 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="document_management",
         question=(
-            "A broker reviewing a purchase agreement notices the legal description"
+            "A broker reviewing a purchase agreement notices the legal description "
             "does not match the property address. The broker should:"
         ),
         choices=[

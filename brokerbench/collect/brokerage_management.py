@@ -20,8 +20,8 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="agent_recruitment",
         question=(
-            "A managing broker is evaluating whether to hire agents as independent"
-            "contractors or employees. The PRIMARY factor that distinguishes the"
+            "A managing broker is evaluating whether to hire agents as independent "
+            "contractors or employees. The PRIMARY factor that distinguishes the "
             "two is:"
         ),
         choices=[
@@ -72,7 +72,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="office_operations",
         question=(
-            "A brokerage's trust account is short $5,000 after a monthly"
+            "A brokerage's trust account is short $5,000 after a monthly "
             "reconciliation. The broker should FIRST:"
         ),
         choices=[
@@ -97,7 +97,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="office_operations",
         question=(
-            "Which of the following is a required element of a brokerage's policy"
+            "Which of the following is a required element of a brokerage's policy "
             "and procedures manual?"
         ),
         choices=[
@@ -123,7 +123,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         subdomain="financial_management",
         question=(
             "A brokerage earned $2,400,000 in gross commission income last year."
-            "Operating expenses were $1,800,000 including agent splits. The"
+            "Operating expenses were $1,800,000 including agent splits. The "
             "brokerage's company dollar (net revenue) is:"
         ),
         choices=[
@@ -148,7 +148,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="financial_management",
         question=(
-            "A broker is considering opening a second office location. The MOST"
+            "A broker is considering opening a second office location. The MOST "
             "important financial metric to evaluate is:"
         ),
         choices=[
@@ -173,8 +173,8 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="risk_management",
         question=(
-            "A brokerage receives a complaint that one of its agents showed"
-            "properties only in certain neighborhoods based on the client's"
+            "A brokerage receives a complaint that one of its agents showed "
+            "properties only in certain neighborhoods based on the client's "
             "ethnicity. The broker should:"
         ),
         choices=[
@@ -200,7 +200,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="risk_management",
         question=(
-            "An agent in the brokerage is involved in a transaction where they are"
+            "An agent in the brokerage is involved in a transaction where they are "
             "also the buyer. This situation requires:"
         ),
         choices=[
@@ -225,7 +225,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="technology_systems",
         question=(
-            "A brokerage is implementing a new CRM system. From a compliance"
+            "A brokerage is implementing a new CRM system. From a compliance "
             "perspective, the MOST critical requirement is:"
         ),
         choices=[
@@ -253,8 +253,8 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="technology_systems",
         question=(
-            "A brokerage's website displays property listings with the required IDX"
-            "disclaimers. However, the site fails to update listing statuses in"
+            "A brokerage's website displays property listings with the required IDX "
+            "disclaimers. However, the site fails to update listing statuses in "
             "real time. This creates risk because:"
         ),
         choices=[
@@ -280,7 +280,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="training_development",
         question=(
-            "A broker discovers that several agents are not completing their"
+            "A broker discovers that several agents are not completing their "
             "required continuing education (CE) hours. The broker should:"
         ),
         choices=[
@@ -309,7 +309,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="team_management",
         question=(
-            "A top-producing agent wants to form a team within the brokerage. The"
+            "A top-producing agent wants to form a team within the brokerage. The "
             "broker should ensure:"
         ),
         choices=[
@@ -338,7 +338,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="financial_management",
         question=(
-            "A brokerage offers agents three commission split options: 70/30, 80/20"
+            "A brokerage offers agents three commission split options: 70/30, 80/20 "
             "with a desk fee, or 100% with a flat monthly fee. An agent closing"
             "$200,000 in annual GCI would earn the MOST under which plan?"
         ),
@@ -366,7 +366,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="succession_planning",
         question=(
-            "A broker-owner is planning to retire in 5 years. The FIRST step in"
+            "A broker-owner is planning to retire in 5 years. The FIRST step in "
             "succession planning should be:"
         ),
         choices=[
@@ -392,8 +392,8 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="team_management",
         question=(
-            "A newly licensed agent joins a brokerage and immediately wants to"
-            "represent a family member in a complex commercial transaction. The"
+            "A newly licensed agent joins a brokerage and immediately wants to "
+            "represent a family member in a complex commercial transaction. The "
             "managing broker should:"
         ),
         choices=[

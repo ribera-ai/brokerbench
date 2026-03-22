@@ -20,8 +20,8 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="buyer_counseling",
         question=(
-            "A first-time homebuyer asks their agent whether they should waive the"
-            "home inspection to make their offer more competitive. The agent should"
+            "A first-time homebuyer asks their agent whether they should waive the "
+            "home inspection to make their offer more competitive. The agent should "
             "advise:"
         ),
         choices=[
@@ -50,8 +50,8 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="buyer_counseling",
         question=(
-            "A buyer is pre-approved for $500,000 but finds a home they love listed"
-            "at $520,000. The buyer asks the agent if they should offer over their"
+            "A buyer is pre-approved for $500,000 but finds a home they love listed "
+            "at $520,000. The buyer asks the agent if they should offer over their "
             "pre-approval amount. The agent should:"
         ),
         choices=[
@@ -81,7 +81,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="seller_counseling",
         question=(
-            "A seller wants to list their home $50,000 above the CMA-supported"
+            "A seller wants to list their home $50,000 above the CMA-supported "
             "price range. The listing agent should:"
         ),
         choices=[
@@ -109,8 +109,8 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="seller_counseling",
         question=(
-            "A seller asks their agent whether they should accept an offer that"
-            "includes a sale contingency from the buyer. The MOST important factors"
+            "A seller asks their agent whether they should accept an offer that "
+            "includes a sale contingency from the buyer. The MOST important factors "
             "to analyze include:"
         ),
         choices=[
@@ -139,7 +139,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="investment_advisory",
         question=(
-            "A client asks their agent about the potential return on a rental"
+            "A client asks their agent about the potential return on a rental "
             "property priced at $300,000 that generates $2,400/month in gross rent."
             "The gross rent multiplier (GRM) is:"
         ),
@@ -165,8 +165,8 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="investment_advisory",
         question=(
-            "A client is deciding between two investment properties. Property A has"
-            "a cap rate of 8% and Property B has a cap rate of 5%. Assuming similar"
+            "A client is deciding between two investment properties. Property A has "
+            "a cap rate of 8% and Property B has a cap rate of 5%. Assuming similar "
             "risk profiles, which statement is MOST accurate?"
         ),
         choices=[
@@ -192,7 +192,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="negotiation_strategy",
         question=(
-            "During negotiations, the buyer's agent receives a counteroffer that"
+            "During negotiations, the buyer's agent receives a counteroffer that "
             "expires in 24 hours. The buyer wants to submit a counter-counteroffer."
             "The agent should advise:"
         ),
@@ -221,8 +221,8 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="negotiation_strategy",
         question=(
-            "A buyer's agent is representing a client in a multiple-offer"
-            "situation. The listing agent indicates there are 5 offers. The buyer's"
+            "A buyer's agent is representing a client in a multiple-offer "
+            "situation. The listing agent indicates there are 5 offers. The buyer's "
             "agent should:"
         ),
         choices=[
@@ -281,7 +281,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="relocation_services",
         question=(
-            "A relocating buyer asks the agent to recommend specific schools for"
+            "A relocating buyer asks the agent to recommend specific schools for "
             "their children. The agent should:"
         ),
         choices=[
@@ -310,7 +310,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="estate_planning",
         question=(
-            "An elderly client wants to add their adult child to the deed of their"
+            "An elderly client wants to add their adult child to the deed of their "
             "home to avoid probate. The agent should:"
         ),
         choices=[
@@ -340,7 +340,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="market_analysis",
         question=(
-            "A buyer asks the agent whether now is a good time to buy, given rising"
+            "A buyer asks the agent whether now is a good time to buy, given rising "
             "interest rates. The agent should:"
         ),
         choices=[
@@ -369,7 +369,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="market_analysis",
         question=(
-            "A seller's market has an average days-on-market of 5 days and 1.2"
+            "A seller's market has an average days-on-market of 5 days and 1.2 "
             "months of inventory. A listing agent should advise their seller that:"
         ),
         choices=[
@@ -398,7 +398,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="disclosure_guidance",
         question=(
-            "A seller discloses to their listing agent that the basement floods"
+            "A seller discloses to their listing agent that the basement floods "
             "during heavy rain. The agent should:"
         ),
         choices=[
@@ -428,8 +428,8 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="disclosure_guidance",
         question=(
-            "A buyer's agent discovers during a showing that the property may have"
-            "unpermitted additions (a finished garage conversion). The agent"
+            "A buyer's agent discovers during a showing that the property may have "
+            "unpermitted additions (a finished garage conversion). The agent "
             "should:"
         ),
         choices=[

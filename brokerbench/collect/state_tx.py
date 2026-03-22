@@ -123,7 +123,7 @@ ALL_TX_INSTANCES: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="licensing",
         question=(
-            "Texas real estate licensees must complete how many hours of continuing"
+            "Texas real estate licensees must complete how many hours of continuing "
             "education every two years?"
         ),
         choices=[

@@ -87,8 +87,8 @@ _TOPIC_I: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_property_characteristics",
         question=(
-            "A homeowner installs a custom built-in bookshelf unit in their living"
-            "room, anchored to the wall studs. When they sell the property, the"
+            "A homeowner installs a custom built-in bookshelf unit in their living "
+            "room, anchored to the wall studs. When they sell the property, the "
             "buyer expects the bookshelf to remain. The seller wants to take it."
             "Under standard fixture analysis, who prevails?"
         ),
@@ -115,7 +115,7 @@ _TOPIC_I: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_property_characteristics",
         question=(
-            "A property is described as the NE 1/4 of the SW 1/4 of Section 12. How"
+            "A property is described as the NE 1/4 of the SW 1/4 of Section 12. How "
             "many acres does this parcel contain?"
         ),
         choices=[
@@ -140,7 +140,7 @@ _TOPIC_I: list[Instance] = [
         subdomain="real_property_characteristics",
         question=(
             "A property owner grants a conservation easement to a land trust,"
-            "permanently restricting development on 50 acres. What type of easement"
+            "permanently restricting development on 50 acres. What type of easement "
             "is this?"
         ),
         choices=[
@@ -165,8 +165,8 @@ _TOPIC_I: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_property_characteristics",
         question=(
-            "A commercial tenant installs a custom hydraulic car lift in a leased"
-            "auto repair shop, bolting it to the concrete floor. The lease is"
+            "A commercial tenant installs a custom hydraulic car lift in a leased "
+            "auto repair shop, bolting it to the concrete floor. The lease is "
             "silent on trade fixtures. At lease end, can the tenant remove it?"
         ),
         choices=[
@@ -191,9 +191,9 @@ _TOPIC_I: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_property_characteristics",
         question=(
-            "A property owner discovers that a neighbor's fence encroaches 2 feet"
-            "onto their land. The fence has been there for 25 years, exceeding the"
-            "state's statutory period for adverse possession. The neighbor claims"
+            "A property owner discovers that a neighbor's fence encroaches 2 feet "
+            "onto their land. The fence has been there for 25 years, exceeding the "
+            "state's statutory period for adverse possession. The neighbor claims "
             "no hostile intent. A broker advising the owner should explain that:"
         ),
         choices=[
@@ -294,7 +294,7 @@ _TOPIC_II: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="ownership_and_title",
         question=(
-            "Three friends purchase a property as joint tenants. One friend later"
+            "Three friends purchase a property as joint tenants. One friend later "
             "sells their interest to a fourth party without the others' knowledge."
             "What form of ownership exists after the sale?"
         ),
@@ -324,7 +324,7 @@ _TOPIC_II: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="ownership_and_title",
         question=(
-            "A developer creates a condominium by recording a declaration and plat"
+            "A developer creates a condominium by recording a declaration and plat "
             "map. Each unit owner receives:"
         ),
         choices=[
@@ -349,8 +349,8 @@ _TOPIC_II: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="ownership_and_title",
         question=(
-            "Buyer A records their deed on Monday. Buyer B, who purchased the same"
-            "property from the same seller, records on Tuesday. In a race-notice"
+            "Buyer A records their deed on Monday. Buyer B, who purchased the same "
+            "property from the same seller, records on Tuesday. In a race-notice "
             "recording state, who has priority?"
         ),
         choices=[
@@ -379,7 +379,7 @@ _TOPIC_II: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="ownership_and_title",
         question=(
-            "A married couple owns property as tenants by the entirety. The husband"
+            "A married couple owns property as tenants by the entirety. The husband "
             "files for bankruptcy individually. What happens to the property?"
         ),
         choices=[
@@ -436,8 +436,8 @@ _TOPIC_III: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="property_value_and_appraisal",
         question=(
-            "A broker is preparing a competitive market analysis (CMA) for a"
-            "listing presentation. Which of the following is TRUE about a CMA"
+            "A broker is preparing a competitive market analysis (CMA) for a "
+            "listing presentation. Which of the following is TRUE about a CMA "
             "versus a formal appraisal?"
         ),
         choices=[
@@ -466,7 +466,7 @@ _TOPIC_III: list[Instance] = [
         subdomain="property_value_and_appraisal",
         question=(
             "Which economic principle explains why adding a swimming pool worth"
-            "$50,000 to a modest home in a declining neighborhood may only increase"
+            "$50,000 to a modest home in a declining neighborhood may only increase "
             "the home's value by $10,000?"
         ),
         choices=[
@@ -492,9 +492,9 @@ _TOPIC_III: list[Instance] = [
         subdomain="property_value_and_appraisal",
         question=(
             "An appraiser identifies three comparable sales: $310,000, $325,000,"
-            "and $340,000. Comparable 1 has a smaller lot and needs a +$15,000"
-            "adjustment. Comparable 2 needs no adjustments. Comparable 3 has an"
-            "extra bathroom requiring a -$10,000 adjustment. What is the indicated"
+            "and $340,000. Comparable 1 has a smaller lot and needs a +$15,000 "
+            "adjustment. Comparable 2 needs no adjustments. Comparable 3 has an "
+            "extra bathroom requiring a -$10,000 adjustment. What is the indicated "
             "value using the sales comparison approach?"
         ),
         choices=[
@@ -521,7 +521,7 @@ _TOPIC_III: list[Instance] = [
         subdomain="property_value_and_appraisal",
         question=(
             "A commercial property generates $120,000 in net operating income"
-            "(NOI). The capitalization rate for similar properties is 8%. What is"
+            "(NOI). The capitalization rate for similar properties is 8%. What is "
             "the property's value using the income approach?"
         ),
         choices=[
@@ -591,9 +591,9 @@ _TOPIC_III: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="property_value_and_appraisal",
         question=(
-            "An appraiser is valuing a 20-year-old office building. The replacement"
+            "An appraiser is valuing a 20-year-old office building. The replacement "
             "cost new is $2,000,000. Physical deterioration is estimated at 15%,"
-            "functional obsolescence at 5%, and external obsolescence at 3%. The"
+            "functional obsolescence at 5%, and external obsolescence at 3%. The "
             "land value is $500,000. What is the indicated value?"
         ),
         choices=[
@@ -693,9 +693,9 @@ _TOPIC_IV: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="contracts_and_agency",
         question=(
-            "A buyer signs a purchase agreement that includes a 10-day inspection"
-            "contingency. On day 8, the inspector discovers significant foundation"
-            "damage. The buyer wants to cancel the contract. Which of the following"
+            "A buyer signs a purchase agreement that includes a 10-day inspection "
+            "contingency. On day 8, the inspector discovers significant foundation "
+            "damage. The buyer wants to cancel the contract. Which of the following "
             "is correct?"
         ),
         choices=[
@@ -721,7 +721,7 @@ _TOPIC_IV: list[Instance] = [
         subdomain="contracts_and_agency",
         question=(
             "A seller lists their home at $450,000. A buyer submits an offer at"
-            "$420,000. The seller responds with a counter-offer at $440,000. Which"
+            "$420,000. The seller responds with a counter-offer at $440,000. Which "
             "statement is TRUE?"
         ),
         choices=[
@@ -745,8 +745,8 @@ _TOPIC_IV: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="contracts_and_agency",
         question=(
-            "A buyer submits an offer with an earnest money deposit of $10,000. The"
-            "offer is accepted, but the buyer later defaults without a legal"
+            "A buyer submits an offer with an earnest money deposit of $10,000. The "
+            "offer is accepted, but the buyer later defaults without a legal "
             "excuse. Under a liquidated damages clause, the seller:"
         ),
         choices=[
@@ -771,8 +771,8 @@ _TOPIC_IV: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="contracts_and_agency",
         question=(
-            "The Statute of Frauds requires that certain contracts be in writing to"
-            "be enforceable. Which of the following is NOT required to be in"
+            "The Statute of Frauds requires that certain contracts be in writing to "
+            "be enforceable. Which of the following is NOT required to be in "
             "writing under the Statute of Frauds?"
         ),
         choices=[
@@ -798,7 +798,7 @@ _TOPIC_IV: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="contracts_and_agency",
         question=(
-            "A listing agent receives an offer on their listing and simultaneously"
+            "A listing agent receives an offer on their listing and simultaneously "
             "has a buyer client who wants to make an offer on the same property."
             "The broker must:"
         ),
@@ -824,9 +824,9 @@ _TOPIC_IV: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="contracts_and_agency",
         question=(
-            "A buyer's agent discovers that the property they are showing has a"
-            "material defect that the seller has not disclosed. The listing agent"
-            "has assured the buyer's agent everything is fine. The buyer's agent"
+            "A buyer's agent discovers that the property they are showing has a "
+            "material defect that the seller has not disclosed. The listing agent "
+            "has assured the buyer's agent everything is fine. The buyer's agent "
             "should:"
         ),
         choices=[
@@ -851,9 +851,9 @@ _TOPIC_IV: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="contracts_and_agency",
         question=(
-            "A property is under contract. The buyer discovers a previously unknown"
-            "easement that was not disclosed and that significantly limits their"
-            "planned use. The seller claims the contract is 'as-is.' Which analysis"
+            "A property is under contract. The buyer discovers a previously unknown "
+            "easement that was not disclosed and that significantly limits their "
+            "planned use. The seller claims the contract is 'as-is.' Which analysis "
             "is MOST accurate?"
         ),
         choices=[
@@ -977,8 +977,8 @@ _TOPIC_V: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_practice",
         question=(
-            "A landlord refuses to rent to a family with children, stating the"
-            "property is for 'adults only.' The property is a 10-unit apartment"
+            "A landlord refuses to rent to a family with children, stating the "
+            "property is for 'adults only.' The property is a 10-unit apartment "
             "building. Is this a Fair Housing violation?"
         ),
         choices=[
@@ -1004,8 +1004,8 @@ _TOPIC_V: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_practice",
         question=(
-            "An agent writes an advertisement for a property in a predominantly"
-            "Spanish-speaking neighborhood stating: 'Perfect for English-speaking"
+            "An agent writes an advertisement for a property in a predominantly "
+            "Spanish-speaking neighborhood stating: 'Perfect for English-speaking "
             "professionals.' This ad is:"
         ),
         choices=[
@@ -1031,8 +1031,8 @@ _TOPIC_V: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_practice",
         question=(
-            "A licensed salesperson moves from Broker A to Broker B. The"
-            "salesperson has active listings under Broker A. What happens to those"
+            "A licensed salesperson moves from Broker A to Broker B. The "
+            "salesperson has active listings under Broker A. What happens to those "
             "listings?"
         ),
         choices=[
@@ -1059,7 +1059,7 @@ _TOPIC_V: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_practice",
         question=(
-            "A broker receives multiple offers on a listing. One offer includes an"
+            "A broker receives multiple offers on a listing. One offer includes an "
             "escalation clause. The broker should:"
         ),
         choices=[
@@ -1084,8 +1084,8 @@ _TOPIC_V: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_practice",
         question=(
-            "A managing broker discovers that a newly licensed agent under their"
-            "supervision has been conducting open houses without disclosing their"
+            "A managing broker discovers that a newly licensed agent under their "
+            "supervision has been conducting open houses without disclosing their "
             "agency relationship to visitors. The managing broker:"
         ),
         choices=[
@@ -1110,8 +1110,8 @@ _TOPIC_V: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_practice",
         question=(
-            "A property owner wants to sell their single-family home without using"
-            "a broker. They place a 'For Sale' sign that reads 'No Children.' Under"
+            "A property owner wants to sell their single-family home without using "
+            "a broker. They place a 'For Sale' sign that reads 'No Children.' Under "
             "the Fair Housing Act:"
         ),
         choices=[
@@ -1137,8 +1137,8 @@ _TOPIC_V: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_practice",
         question=(
-            "A broker discovers that an agent in the office has been commingling"
-            "client trust funds with personal funds. The broker's FIRST step should"
+            "A broker discovers that an agent in the office has been commingling "
+            "client trust funds with personal funds. The broker's FIRST step should "
             "be:"
         ),
         choices=[
@@ -1172,7 +1172,7 @@ _TOPIC_VI: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosures_and_environmental",
         question=(
-            "Under federal law, sellers of homes built before which year must"
+            "Under federal law, sellers of homes built before which year must "
             "disclose known lead-based paint hazards?"
         ),
         choices=[
@@ -1243,7 +1243,7 @@ _TOPIC_VI: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosures_and_environmental",
         question=(
-            "CERCLA (Superfund) imposes liability for environmental cleanup on all"
+            "CERCLA (Superfund) imposes liability for environmental cleanup on all "
             "of the following EXCEPT:"
         ),
         choices=[
@@ -1273,8 +1273,8 @@ _TOPIC_VI: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosures_and_environmental",
         question=(
-            "A seller knows their basement floods every spring but checks 'No' on"
-            "the disclosure form for water intrusion. The buyer discovers the"
+            "A seller knows their basement floods every spring but checks 'No' on "
+            "the disclosure form for water intrusion. The buyer discovers the "
             "flooding after closing. The seller is likely liable for:"
         ),
         choices=[
@@ -1298,7 +1298,7 @@ _TOPIC_VI: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosures_and_environmental",
         question=(
-            "A listing agent learns from a neighbor that the property next door was"
+            "A listing agent learns from a neighbor that the property next door was "
             "formerly a dry cleaning business with potential soil contamination."
             "The listing agent should:"
         ),
@@ -1351,7 +1351,7 @@ _TOPIC_VI: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosures_and_environmental",
         question=(
-            "A commercial property is being sold. The buyer's Phase I Environmental"
+            "A commercial property is being sold. The buyer's Phase I Environmental "
             "Site Assessment reveals 'recognized environmental conditions' (RECs)."
             "The buyer wants to proceed. As the broker, what should you advise?"
         ),
@@ -1410,7 +1410,7 @@ _TOPIC_VII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="financing_and_settlement",
         question=(
-            "A borrower's loan has an interest rate that adjusts annually based on"
+            "A borrower's loan has an interest rate that adjusts annually based on "
             "the 1-year Treasury index plus a 2% margin. This is an example of:"
         ),
         choices=[
@@ -1434,7 +1434,7 @@ _TOPIC_VII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="financing_and_settlement",
         question=(
-            "A buyer is obtaining a conventional loan with a 90% LTV ratio. The"
+            "A buyer is obtaining a conventional loan with a 90% LTV ratio. The "
             "lender requires PMI. When can the borrower request removal of PMI?"
         ),
         choices=[
@@ -1459,7 +1459,7 @@ _TOPIC_VII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="financing_and_settlement",
         question=(
-            "At closing, the buyer's settlement statement shows a credit for"
+            "At closing, the buyer's settlement statement shows a credit for "
             "property taxes. This most likely means:"
         ),
         choices=[
@@ -1483,7 +1483,7 @@ _TOPIC_VII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="financing_and_settlement",
         question=(
-            "The Equal Credit Opportunity Act (ECOA) prohibits lenders from"
+            "The Equal Credit Opportunity Act (ECOA) prohibits lenders from "
             "discriminating based on all of the following EXCEPT:"
         ),
         choices=[
@@ -1535,8 +1535,8 @@ _TOPIC_VII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="financing_and_settlement",
         question=(
-            "A settlement agent discovers an unreleased mortgage lien from a"
-            "previous owner. The current seller claims they paid off the prior"
+            "A settlement agent discovers an unreleased mortgage lien from a "
+            "previous owner. The current seller claims they paid off the prior "
             "owner's loan. The broker should advise:"
         ),
         choices=[
@@ -1560,7 +1560,7 @@ _TOPIC_VII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="financing_and_settlement",
         question=(
-            "Under the Dodd-Frank Act, a Qualified Mortgage (QM) must meet all of"
+            "Under the Dodd-Frank Act, a Qualified Mortgage (QM) must meet all of "
             "the following criteria EXCEPT:"
         ),
         choices=[
@@ -1591,8 +1591,8 @@ _TOPIC_VIII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_math",
         question=(
-            "A property sold for $425,000. The buyer obtained an 80% LTV loan at"
-            "6.5% annual interest. What is the buyer's monthly interest payment for"
+            "A property sold for $425,000. The buyer obtained an 80% LTV loan at "
+            "6.5% annual interest. What is the buyer's monthly interest payment for "
             "the first month?"
         ),
         choices=[
@@ -1616,9 +1616,9 @@ _TOPIC_VIII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_math",
         question=(
-            "A broker sells a property for $375,000. The listing agreement calls"
-            "for a 6% commission split 50/50 with the selling broker. The listing"
-            "agent receives 60% of their broker's share. How much does the listing"
+            "A broker sells a property for $375,000. The listing agreement calls "
+            "for a 6% commission split 50/50 with the selling broker. The listing "
+            "agent receives 60% of their broker's share. How much does the listing "
             "agent receive?"
         ),
         choices=[
@@ -1667,7 +1667,7 @@ _TOPIC_VIII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_math",
         question=(
-            "A rectangular lot measures 150 feet by 200 feet. How many acres does"
+            "A rectangular lot measures 150 feet by 200 feet. How many acres does "
             "it contain? (1 acre = 43,560 square feet)"
         ),
         choices=[
@@ -1691,8 +1691,8 @@ _TOPIC_VIII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_math",
         question=(
-            "A rental property has 8 units, each renting for $1,200/month. The"
-            "vacancy rate is 5%. Annual operating expenses are $48,000. What is the"
+            "A rental property has 8 units, each renting for $1,200/month. The "
+            "vacancy rate is 5%. Annual operating expenses are $48,000. What is the "
             "net operating income (NOI)?"
         ),
         choices=[
@@ -1717,9 +1717,9 @@ _TOPIC_VIII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_math",
         question=(
-            "A borrower qualifies for a maximum housing expense ratio of 28% and a"
-            "total debt ratio of 36%. Their gross monthly income is $8,500 with"
-            "existing monthly debt of $650. What is the maximum monthly PITI they"
+            "A borrower qualifies for a maximum housing expense ratio of 28% and a "
+            "total debt ratio of 36%. Their gross monthly income is $8,500 with "
+            "existing monthly debt of $650. What is the maximum monthly PITI they "
             "qualify for?"
         ),
         choices=[
@@ -1744,8 +1744,8 @@ _TOPIC_VIII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_math",
         question=(
-            "An investor purchases a property for $500,000 and sells it 3 years"
-            "later for $580,000, after spending $25,000 on improvements. Closing"
+            "An investor purchases a property for $500,000 and sells it 3 years "
+            "later for $580,000, after spending $25,000 on improvements. Closing "
             "costs on the sale are $12,000. What is the capital gain?"
         ),
         choices=[
@@ -1770,8 +1770,8 @@ _TOPIC_VIII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_math",
         question=(
-            "A property generates $180,000 annual gross income with a 10% vacancy"
-            "rate. Operating expenses are 45% of effective gross income. If the cap"
+            "A property generates $180,000 annual gross income with a 10% vacancy "
+            "rate. Operating expenses are 45% of effective gross income. If the cap "
             "rate is 9%, what is the property's value?"
         ),
         choices=[

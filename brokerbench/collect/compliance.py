@@ -20,7 +20,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="fair_housing",
         question=(
-            "A property manager refuses to rent to a family with children, citing a"
+            "A property manager refuses to rent to a family with children, citing a "
             "building policy against minors. This violates:"
         ),
         choices=[
@@ -45,8 +45,8 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="fair_housing",
         question=(
-            "A real estate agent tells a prospective buyer that a particular"
-            "neighborhood is 'not a good fit' based on the racial composition of"
+            "A real estate agent tells a prospective buyer that a particular "
+            "neighborhood is 'not a good fit' based on the racial composition of "
             "the area. This practice is known as:"
         ),
         choices=[
@@ -100,8 +100,8 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="agency_compliance",
         question=(
-            "A broker discovers that one of their agents has been depositing"
-            "earnest money checks into a personal account rather than the brokerage"
+            "A broker discovers that one of their agents has been depositing "
+            "earnest money checks into a personal account rather than the brokerage "
             "trust account. The broker should:"
         ),
         choices=[
@@ -130,7 +130,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="agency_compliance",
         question=(
-            "An agent representing a buyer learns that the property has foundation"
+            "An agent representing a buyer learns that the property has foundation "
             "issues from a friend who is a contractor. The agent:"
         ),
         choices=[
@@ -184,8 +184,8 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="respa_tila",
         question=(
-            "A lender provides a borrower with a Loan Estimate on Monday. The"
-            "borrower's interest rate lock expires on Friday. Under TRID, the"
+            "A lender provides a borrower with a Loan Estimate on Monday. The "
+            "borrower's interest rate lock expires on Friday. Under TRID, the "
             "earliest the loan can close is:"
         ),
         choices=[
@@ -211,7 +211,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="environmental",
         question=(
-            "A buyer is purchasing a home built in 1972. The seller is required byfederal law to:"
+            "A buyer is purchasing a home built in 1972. The seller is required by federal law to:"
         ),
         choices=[
             "A. Remove all lead-based paint before closing",
@@ -240,7 +240,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         subdomain="environmental",
         question=(
             "A commercial property buyer discovers underground storage tanks (USTs)"
-            "during due diligence. Under CERCLA, the buyer can claim the innocent"
+            "during due diligence. Under CERCLA, the buyer can claim the innocent "
             "landowner defense ONLY if:"
         ),
         choices=[
@@ -268,7 +268,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="antitrust",
         question=(
-            "Three competing brokerages in a market agree to charge the same"
+            "Three competing brokerages in a market agree to charge the same "
             "commission rate. This is an example of:"
         ),
         choices=[
@@ -293,8 +293,8 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="antitrust",
         question=(
-            "Two brokerages agree that one will handle the north side of town and"
-            "the other the south side, with neither competing in the other's"
+            "Two brokerages agree that one will handle the north side of town and "
+            "the other the south side, with neither competing in the other's "
             "territory. This practice is:"
         ),
         choices=[
@@ -319,7 +319,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="license_law",
         question=(
-            "A real estate salesperson's license has expired. Any commissions"
+            "A real estate salesperson's license has expired. Any commissions "
             "earned on pending transactions:"
         ),
         choices=[
@@ -344,8 +344,8 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="license_law",
         question=(
-            "A broker is reviewing an advertisement placed by one of their agents"
-            "on social media. The ad fails to include the brokerage name. Under"
+            "A broker is reviewing an advertisement placed by one of their agents "
+            "on social media. The ad fails to include the brokerage name. Under "
             "most state regulations, who is responsible?"
         ),
         choices=[
@@ -374,7 +374,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         subdomain="environmental",
         question=(
             "A property owner hires a contractor to renovate a home built in 1965."
-            "Under the EPA's RRP (Renovation, Repair, and Painting) Rule, the"
+            "Under the EPA's RRP (Renovation, Repair, and Painting) Rule, the "
             "contractor must:"
         ),
         choices=[
@@ -400,8 +400,8 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="data_privacy",
         question=(
-            "A brokerage collects personal financial information from buyers during"
-            "the pre-approval process. Under the Gramm-Leach-Bliley Act, the"
+            "A brokerage collects personal financial information from buyers during "
+            "the pre-approval process. Under the Gramm-Leach-Bliley Act, the "
             "brokerage must:"
         ),
         choices=[

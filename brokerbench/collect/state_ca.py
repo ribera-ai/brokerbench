@@ -19,7 +19,7 @@ ALL_CA_INSTANCES: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosure",
         question=(
-            "In California, the Transfer Disclosure Statement (TDS) must beprovided by the seller:"
+            "In California, the Transfer Disclosure Statement (TDS) must be provided by the seller:"
         ),
         choices=[
             "A. Only if the buyer requests it",
@@ -44,7 +44,7 @@ ALL_CA_INSTANCES: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosure",
         question=(
-            "A California listing agent must complete which additional disclosure"
+            "A California listing agent must complete which additional disclosure "
             "form that is unique to the state?"
         ),
         choices=[
@@ -70,7 +70,7 @@ ALL_CA_INSTANCES: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="natural_hazards",
         question=(
-            "California's Natural Hazard Disclosure Statement (NHD) must disclose"
+            "California's Natural Hazard Disclosure Statement (NHD) must disclose "
             "whether the property is located in:"
         ),
         choices=[

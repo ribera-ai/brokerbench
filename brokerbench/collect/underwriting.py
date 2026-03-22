@@ -20,7 +20,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="loan_qualification",
         question=(
-            "A borrower has a gross monthly income of $8,000, a monthly mortgage"
+            "A borrower has a gross monthly income of $8,000, a monthly mortgage "
             "payment (PITI) of $2,000, and total monthly debt payments of $3,200."
             "What is the borrower's back-end DTI ratio?"
         ),
@@ -46,7 +46,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="loan_qualification",
         question=(
-            "A conventional loan applicant has a credit score of 680 and is putting"
+            "A conventional loan applicant has a credit score of 680 and is putting "
             "10% down. The lender will most likely require:"
         ),
         choices=[
@@ -71,7 +71,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="loan_types",
         question=(
-            "Which loan type is specifically designed for rural properties and does"
+            "Which loan type is specifically designed for rural properties and does "
             "not require a down payment?"
         ),
         choices=[
@@ -97,8 +97,8 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="loan_types",
         question=(
-            "A veteran with full VA entitlement is purchasing a $400,000 home. The"
-            "VA funding fee is 2.15% for first-time use. What is the funding fee"
+            "A veteran with full VA entitlement is purchasing a $400,000 home. The "
+            "VA funding fee is 2.15% for first-time use. What is the funding fee "
             "amount?"
         ),
         choices=[
@@ -123,8 +123,8 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="risk_assessment",
         question=(
-            "A borrower has stable employment but their credit report shows three"
-            "late mortgage payments in the past 12 months. An underwriter would"
+            "A borrower has stable employment but their credit report shows three "
+            "late mortgage payments in the past 12 months. An underwriter would "
             "most likely:"
         ),
         choices=[
@@ -150,7 +150,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="risk_assessment",
         question=(
-            "An appraiser notes that comparable sales used in the appraisal are"
+            "An appraiser notes that comparable sales used in the appraisal are "
             "more than 12 months old and located in a different school district."
             "The underwriter should:"
         ),
@@ -180,8 +180,8 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="compliance_flags",
         question=(
-            "A loan file shows that the borrower's employer verification was"
-            "completed 120 days before the closing date. Under most agency"
+            "A loan file shows that the borrower's employer verification was "
+            "completed 120 days before the closing date. Under most agency "
             "guidelines, this verification:"
         ),
         choices=[
@@ -233,9 +233,9 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="income_analysis",
         question=(
-            "A self-employed borrower shows $120,000 in gross income on their tax"
-            "returns but has $45,000 in business deductions including $12,000 in"
-            "depreciation. For qualifying purposes, the lender will use an income"
+            "A self-employed borrower shows $120,000 in gross income on their tax "
+            "returns but has $45,000 in business deductions including $12,000 in "
+            "depreciation. For qualifying purposes, the lender will use an income "
             "of approximately:"
         ),
         choices=[
@@ -261,7 +261,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="income_analysis",
         question=(
-            "A borrower receives $2,000/month in child support. To use this income"
+            "A borrower receives $2,000/month in child support. To use this income "
             "for qualification, the underwriter must verify:"
         ),
         choices=[
@@ -290,7 +290,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="property_analysis",
         question=(
-            "An appraisal reveals that the subject property's roof has less than 2"
+            "An appraisal reveals that the subject property's roof has less than 2 "
             "years of remaining useful life. For an FHA loan, the underwriter will:"
         ),
         choices=[
@@ -318,7 +318,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="property_analysis",
         question=(
-            "A subject property is located in a FEMA-designated Special Flood"
+            "A subject property is located in a FEMA-designated Special Flood "
             "Hazard Area (Zone AE). The lender is required to:"
         ),
         choices=[
@@ -343,7 +343,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="loan_qualification",
         question=(
-            "A borrower is applying for a Qualified Mortgage (QM). Their total DTI"
+            "A borrower is applying for a Qualified Mortgage (QM). Their total DTI "
             "ratio is 44%. Under the QM rule:"
         ),
         choices=[
@@ -372,7 +372,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="compliance_flags",
         question=(
-            "TRID requires lenders to provide the Closing Disclosure to the"
+            "TRID requires lenders to provide the Closing Disclosure to the "
             "borrower at least how many business days before closing?"
         ),
         choices=[
@@ -398,7 +398,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         subdomain="risk_assessment",
         question=(
             "A borrower is purchasing an investment property with 25% down."
-            "Compared to a primary residence purchase, the underwriter should"
+            "Compared to a primary residence purchase, the underwriter should "
             "expect:"
         ),
         choices=[
