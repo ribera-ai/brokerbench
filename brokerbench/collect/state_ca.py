@@ -19,8 +19,7 @@ ALL_CA_INSTANCES: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosure",
         question=(
-            "In California, the Transfer Disclosure Statement (TDS) must be"
-            "provided by the seller:"
+            "In California, the Transfer Disclosure Statement (TDS) must beprovided by the seller:"
         ),
         choices=[
             "A. Only if the buyer requests it",
@@ -152,7 +151,4 @@ def get_all_instances() -> list[Instance]:
     Returns:
         List of all Instance objects for CA state-specific questions.
     """
-    return [
-        instance.model_copy(deep=True)
-        for instance in ALL_CA_INSTANCES
-    ]
+    return [instance.model_copy(deep=True) for instance in ALL_CA_INSTANCES]

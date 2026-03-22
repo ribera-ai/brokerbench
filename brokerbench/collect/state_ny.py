@@ -117,8 +117,7 @@ ALL_NY_INSTANCES: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="licensing",
         question=(
-            "New York real estate salespersons must complete a 77-hour qualifying"
-            "course before:"
+            "New York real estate salespersons must complete a 77-hour qualifyingcourse before:"
         ),
         choices=[
             "A. Showing any properties",
@@ -148,7 +147,4 @@ def get_all_instances() -> list[Instance]:
     Returns:
         List of all Instance objects for NY state-specific questions.
     """
-    return [
-        instance.model_copy(deep=True)
-        for instance in ALL_NY_INSTANCES
-    ]
+    return [instance.model_copy(deep=True) for instance in ALL_NY_INSTANCES]

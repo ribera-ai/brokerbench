@@ -194,8 +194,7 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="document_management",
         question=(
-            "Which of the following is NOT typically required at a residential real"
-            "estate closing?"
+            "Which of the following is NOT typically required at a residential realestate closing?"
         ),
         choices=[
             "A. Deed of trust or mortgage",
@@ -410,7 +409,4 @@ def get_all_instances() -> list[Instance]:
     Returns:
         List of all Instance objects for the transaction management domain.
     """
-    return [
-        instance.model_copy(deep=True)
-        for instance in ALL_TRANSACTION_INSTANCES
-    ]
+    return [instance.model_copy(deep=True) for instance in ALL_TRANSACTION_INSTANCES]

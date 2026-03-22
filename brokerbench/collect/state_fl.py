@@ -143,7 +143,4 @@ def get_all_instances() -> list[Instance]:
     Returns:
         List of all Instance objects for FL state-specific questions.
     """
-    return [
-        instance.model_copy(deep=True)
-        for instance in ALL_FL_INSTANCES
-    ]
+    return [instance.model_copy(deep=True) for instance in ALL_FL_INSTANCES]

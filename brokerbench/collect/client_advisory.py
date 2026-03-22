@@ -462,7 +462,4 @@ def get_all_instances() -> list[Instance]:
     Returns:
         List of all Instance objects for the client advisory domain.
     """
-    return [
-        instance.model_copy(deep=True)
-        for instance in ALL_CLIENT_ADVISORY_INSTANCES
-    ]
+    return [instance.model_copy(deep=True) for instance in ALL_CLIENT_ADVISORY_INSTANCES]

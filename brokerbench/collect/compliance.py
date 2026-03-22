@@ -211,8 +211,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="environmental",
         question=(
-            "A buyer is purchasing a home built in 1972. The seller is required by"
-            "federal law to:"
+            "A buyer is purchasing a home built in 1972. The seller is required byfederal law to:"
         ),
         choices=[
             "A. Remove all lead-based paint before closing",
@@ -431,7 +430,4 @@ def get_all_instances() -> list[Instance]:
     Returns:
         List of all Instance objects for the compliance domain.
     """
-    return [
-        instance.model_copy(deep=True)
-        for instance in ALL_COMPLIANCE_INSTANCES
-    ]
+    return [instance.model_copy(deep=True) for instance in ALL_COMPLIANCE_INSTANCES]

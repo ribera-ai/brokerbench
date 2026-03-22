@@ -43,8 +43,7 @@ ALL_TX_INSTANCES: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="property_rights",
         question=(
-            "Texas is a community property state. This means that property acquired"
-            "during marriage:"
+            "Texas is a community property state. This means that property acquiredduring marriage:"
         ),
         choices=[
             "A. Belongs solely to the spouse who purchased it",
@@ -154,7 +153,4 @@ def get_all_instances() -> list[Instance]:
     Returns:
         List of all Instance objects for TX state-specific questions.
     """
-    return [
-        instance.model_copy(deep=True)
-        for instance in ALL_TX_INSTANCES
-    ]
+    return [instance.model_copy(deep=True) for instance in ALL_TX_INSTANCES]

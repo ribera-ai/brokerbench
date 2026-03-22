@@ -59,9 +59,7 @@ def _call_openrouter(
         )
         response.raise_for_status()
         data = response.json()
-        return str(
-            data["choices"][0]["message"]["content"]
-        ).strip()
+        return str(data["choices"][0]["message"]["content"]).strip()
     except Exception:
         logger.warning("LLM-judge call failed", exc_info=True)
         return None
@@ -118,8 +116,8 @@ def llm_judge_score(
         f"{prompt}\n\n"
         "## Response\n"
         f"{prediction}\n\n"
-        "Return ONLY a JSON object: {\"score\": <float 0-1>, "
-        "\"reason\": \"<one-sentence justification>\"}"
+        'Return ONLY a JSON object: {"score": <float 0-1>, '
+        '"reason": "<one-sentence justification>"}'
     )
 
     llm_output = _call_openrouter(judge_prompt, model=model)

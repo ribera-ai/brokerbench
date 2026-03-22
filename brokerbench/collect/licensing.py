@@ -1324,8 +1324,7 @@ _TOPIC_VI: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosures_and_environmental",
         question=(
-            "A buyer purchasing a property in a known flood zone must obtain flood"
-            "insurance if:"
+            "A buyer purchasing a property in a known flood zone must obtain floodinsurance if:"
         ),
         choices=[
             "A. The property is in any FEMA-designated flood zone",
@@ -1798,14 +1797,7 @@ _TOPIC_VIII: list[Instance] = [
 # Aggregate all instances
 # ---------------------------------------------------------------------------
 ALL_LICENSING_INSTANCES: list[Instance] = (
-    _TOPIC_I
-    + _TOPIC_II
-    + _TOPIC_III
-    + _TOPIC_IV
-    + _TOPIC_V
-    + _TOPIC_VI
-    + _TOPIC_VII
-    + _TOPIC_VIII
+    _TOPIC_I + _TOPIC_II + _TOPIC_III + _TOPIC_IV + _TOPIC_V + _TOPIC_VI + _TOPIC_VII + _TOPIC_VIII
 )
 
 

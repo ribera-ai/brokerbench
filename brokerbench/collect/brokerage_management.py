@@ -427,7 +427,4 @@ def get_all_instances() -> list[Instance]:
     Returns:
         List of all Instance objects for the brokerage management domain.
     """
-    return [
-        instance.model_copy(deep=True)
-        for instance in ALL_BROKERAGE_INSTANCES
-    ]
+    return [instance.model_copy(deep=True) for instance in ALL_BROKERAGE_INSTANCES]

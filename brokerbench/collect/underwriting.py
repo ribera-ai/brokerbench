@@ -431,7 +431,4 @@ def get_all_instances() -> list[Instance]:
     Returns:
         List of all Instance objects for the underwriting domain.
     """
-    return [
-        instance.model_copy(deep=True)
-        for instance in ALL_UNDERWRITING_INSTANCES
-    ]
+    return [instance.model_copy(deep=True) for instance in ALL_UNDERWRITING_INSTANCES]

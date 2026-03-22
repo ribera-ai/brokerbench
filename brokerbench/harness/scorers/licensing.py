@@ -102,11 +102,7 @@ def score_cognitive_depth(
     Returns:
         ScoreDetail with score in [0, 1].
     """
-    level_name = (
-        instance.cognitive_level.value
-        if instance.cognitive_level
-        else "unknown"
-    )
+    level_name = instance.cognitive_level.value if instance.cognitive_level else "unknown"
     rubric = (
         f"The intended cognitive level is **{level_name}**.\n\n"
         "- knowledge: response should recall facts, definitions, "
