@@ -299,11 +299,12 @@ def run_google(
             try:
                 response = client.models.generate_content(
                     model=model_name,
-                    contents=(
-                        "You are a knowledgeable real estate professional "
-                        "taking an evaluation. Answer accurately and concisely.\n\n" + prompt
-                    ),
+                    contents=prompt,
                     config={
+                        "system_instruction": (
+                            "You are a knowledgeable real estate professional "
+                            "taking an evaluation. Answer accurately and concisely."
+                        ),
                         "temperature": 0,
                         "max_output_tokens": 1024,
                     },
