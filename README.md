@@ -21,12 +21,19 @@ git clone https://github.com/ribera-ai/brokerbench.git
 cd brokerbench
 pip install -e .
 
-# Run inference against a model (OpenAI, Anthropic, or OpenRouter)
+# Run inference against a model (OpenAI, Anthropic, Google, or OpenRouter)
 python -m brokerbench.inference.run_api \
     --model_name gpt-4o \
     --dataset all \
     --output_file predictions/gpt-4o.jsonl \
     --provider openai
+
+# Run Gemini models directly
+GEMINI_API_KEY=... python -m brokerbench.inference.run_api \
+    --model_name gemini-2.5-pro \
+    --dataset all \
+    --output_file predictions/gemini-2.5-pro.jsonl \
+    --provider google
 
 # Or use OpenRouter to access any model
 OPENROUTER_API_KEY=sk-or-... python -m brokerbench.inference.run_api \
@@ -75,6 +82,34 @@ Each instance is a JSONL line:
   "explanation": "Under the inspection contingency, the buyer has the right to..."
 }
 ```
+
+## Running Baseline Frontier Tests
+
+Run all frontier models to establish baseline scores:
+
+```bash
+# Set API keys for the providers you want to benchmark
+export OPENAI_API_KEY=...
+export ANTHROPIC_API_KEY=...
+export GEMINI_API_KEY=...
+
+# Run all baselines (Claude Sonnet 4, Claude Opus 4, Gemini 2.5 Pro, GPT-4o, GPT-5)
+./scripts/run_baselines.sh
+
+# Or run a single model
+./scripts/run_baselines.sh gemini-2.5-pro
+
+# View results
+ls logs/run_evaluation/
+```
+
+| Provider | Model | CLI |
+|----------|-------|-----|
+| Anthropic | `claude-sonnet-4-20250514` | `--provider anthropic` |
+| Anthropic | `claude-opus-4-20250514` | `--provider anthropic` |
+| Google | `gemini-2.5-pro` | `--provider google` |
+| OpenAI | `gpt-4o` | `--provider openai` |
+| OpenAI | `gpt-5` | `--provider openai` |
 
 ## Running Against BrokerBot
 

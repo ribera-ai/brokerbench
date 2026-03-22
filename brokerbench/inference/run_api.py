@@ -1,4 +1,4 @@
-"""Run inference against the benchmark using OpenAI / Anthropic / OpenRouter APIs.
+"""Run inference against the benchmark using OpenAI / Anthropic / Google / OpenRouter APIs.
 
 Usage:
     python -m brokerbench.inference.run_api \
@@ -265,6 +265,83 @@ def run_openrouter(
     return predictions
 
 
+def run_google(
+    instances: list[Instance],
+    model_name: str,
+    output_path: Path,
+) -> list[Prediction]:
+    """Run inference using the Google Gemini API.
+
+    Args:
+        instances: List of benchmark instances to evaluate.
+        model_name: Gemini model identifier (e.g. 'gemini-2.5-pro').
+        output_path: Path to write prediction JSONL.
+
+    Returns:
+        List of Prediction objects.
+    """
+    try:
+        from google import genai
+    except ImportError:
+        console.print(
+            "[red]google-genai package not installed. Run: pip install google-genai[/red]"
+        )
+        sys.exit(1)
+
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", ""))
+    predictions: list[Prediction] = []
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(output_path, "w") as f:
+        for instance in tqdm(instances, desc=f"Running {model_name}"):
+            prompt = build_prompt(instance)
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=(
+                        "You are a knowledgeable real estate professional "
+                        "taking an evaluation. Answer accurately and concisely.\n\n"
+                        + prompt
+                    ),
+                    config={
+                        "temperature": 0,
+                        "max_output_tokens": 1024,
+                    },
+                )
+                raw_output = response.text or ""
+
+                # Extract answer letter for MCQ
+                answer = raw_output
+                if instance.choices:
+                    extracted = extract_mcq_answer(raw_output)
+                    if extracted:
+                        answer = extracted
+
+                pred = Prediction(
+                    instance_id=instance.instance_id,
+                    model_name_or_path=model_name,
+                    prediction=answer,
+                    reasoning=raw_output,
+                    raw_output=raw_output,
+                )
+            except Exception as e:
+                console.print(f"[yellow]Error on {instance.instance_id}: {e}[/yellow]")
+                pred = Prediction(
+                    instance_id=instance.instance_id,
+                    model_name_or_path=model_name,
+                    prediction="",
+                    reasoning="",
+                    raw_output=str(e),
+                    metadata={"error": str(e)},
+                )
+
+            predictions.append(pred)
+            f.write(pred.model_dump_json() + "\n")
+
+    return predictions
+
+
 def main() -> None:
     """CLI entry point for API-based inference."""
     parser = argparse.ArgumentParser(
@@ -275,7 +352,7 @@ def main() -> None:
         type=str,
         required=True,
         help="Model identifier (e.g. 'gpt-4o', 'claude-3-sonnet-20240229',"
-        " 'openai/gpt-4o' for OpenRouter).",
+        " 'gemini-2.5-pro', 'openai/gpt-4o' for OpenRouter).",
     )
     parser.add_argument(
         "--dataset",
@@ -293,7 +370,7 @@ def main() -> None:
         "--provider",
         type=str,
         default="openai",
-        choices=["openai", "anthropic", "openrouter"],
+        choices=["openai", "anthropic", "google", "openrouter"],
         help="API provider to use (default: openai).",
     )
     args = parser.parse_args()
@@ -305,6 +382,8 @@ def main() -> None:
         run_openai(instances, args.model_name, args.output_file)
     elif args.provider == "anthropic":
         run_anthropic(instances, args.model_name, args.output_file)
+    elif args.provider == "google":
+        run_google(instances, args.model_name, args.output_file)
     elif args.provider == "openrouter":
         run_openrouter(instances, args.model_name, args.output_file)
 
