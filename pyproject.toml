@@ -49,6 +49,9 @@ Issues = "https://github.com/ribera-ai/brokerbench/issues"
 [tool.setuptools.packages.find]
 include = ["brokerbench*"]
 
+[tool.setuptools.package-data]
+brokerbench = ["resources/datasets/*.jsonl"]
+
 [tool.ruff]
 target-version = "py310"
 line-length = 100
