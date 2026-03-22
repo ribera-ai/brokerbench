@@ -1,0 +1,119 @@
+# Pearson VUE / PSI National Real Estate Licensing Exam Content Outline
+# Source: Pearson VUE Real Estate Examination Content Outlines
+# Applies to both Salesperson and Broker national exam portions
+
+exam_name: "National Real Estate Licensing Examination"
+provider: "Pearson VUE / PSI"
+cognitive_levels:
+  - knowledge   # ~40% of exam - recall of facts, terms, definitions
+  - application # ~40% of exam - apply concepts to scenarios
+  - analysis    # ~20% of exam - evaluate, compare, synthesize
+
+salesperson_exam:
+  total_questions: 80
+  scored_questions: 80
+  time_limit_minutes: 150
+
+broker_exam:
+  total_questions: 80
+  scored_questions: 80
+  time_limit_minutes: 150
+
+topics:
+  - number: "I"
+    title: "Real Property Characteristics, Legal Descriptions, and Property Use"
+    weight_pct: 8
+    subtopics:
+      - "A. Real vs. personal property / Fixtures"
+      - "B. Legal descriptions (metes & bounds, rectangular survey, lot & block)"
+      - "C. Land characteristics and property use"
+      - "D. Water rights (riparian, littoral, prior appropriation)"
+      - "E. Encumbrances (easements, liens, encroachments, deed restrictions)"
+
+  - number: "II"
+    title: "Forms of Ownership, Transfer, and Recording of Title"
+    weight_pct: 10
+    subtopics:
+      - "A. Forms of ownership (severalty, joint tenancy, TIC, TBE, community property)"
+      - "B. Condominiums and cooperatives"
+      - "C. Transfer of title (voluntary, involuntary, by operation of law)"
+      - "D. Deeds (general warranty, special warranty, quitclaim, bargain & sale)"
+      - "E. Title insurance and title search"
+      - "F. Recording acts (race, notice, race-notice)"
+
+  - number: "III"
+    title: "Property Value and Appraisal"
+    weight_pct: 8
+    subtopics:
+      - "A. Principles of value (substitution, contribution, anticipation, conformity)"
+      - "B. Appraisal process and USPAP"
+      - "C. Sales comparison approach"
+      - "D. Cost approach (reproduction vs. replacement, depreciation)"
+      - "E. Income capitalization approach (NOI, cap rate, GRM)"
+      - "F. Broker price opinions (BPO) and CMAs"
+
+  - number: "IV"
+    title: "Real Estate Contracts and Agency"
+    weight_pct: 17
+    subtopics:
+      - "A. Contract elements (competent parties, offer & acceptance, consideration)"
+      - "B. Statute of Frauds"
+      - "C. Agency relationships (buyer, seller, dual, designated, transaction broker)"
+      - "D. Fiduciary duties (OLDCAR)"
+      - "E. Listing agreements (exclusive right-to-sell, exclusive agency, open, net)"
+      - "F. Purchase and sale agreements"
+      - "G. Options and rights of first refusal"
+      - "H. Contingencies (inspection, financing, appraisal)"
+      - "I. Breach, default, and remedies"
+
+  - number: "V"
+    title: "Real Estate Practice and Fair Housing"
+    weight_pct: 22
+    subtopics:
+      - "A. Federal Fair Housing Act (protected classes, exemptions)"
+      - "B. ADA and state fair housing laws"
+      - "C. Prohibited practices (steering, blockbusting, redlining)"
+      - "D. Advertising compliance (HUD guidelines)"
+      - "E. Broker supervision and responsibility"
+      - "F. Trust/escrow accounts"
+      - "G. Commission structures and compensation"
+      - "H. Risk management and E&O insurance"
+      - "I. Antitrust (price-fixing, market allocation, group boycotts)"
+
+  - number: "VI"
+    title: "Property Disclosures and Environmental Issues"
+    weight_pct: 9
+    subtopics:
+      - "A. Lead-based paint disclosure (pre-1978 homes)"
+      - "B. Environmental hazards (asbestos, radon, mold, USTs)"
+      - "C. CERCLA / Superfund and innocent landowner defense"
+      - "D. Seller disclosure requirements"
+      - "E. Material facts and duty to disclose"
+      - "F. Flood zones and FEMA designations"
+      - "G. Phase I and Phase II Environmental Site Assessments"
+
+  - number: "VII"
+    title: "Financing and Settlement"
+    weight_pct: 16
+    subtopics:
+      - "A. Federal lending regulations (RESPA, TILA, ECOA, Dodd-Frank)"
+      - "B. Mortgage types (conventional, FHA, VA, USDA)"
+      - "C. Loan terms (fixed, ARM, balloon, reverse)"
+      - "D. Private mortgage insurance (PMI)"
+      - "E. Loan qualification (DTI ratios, LTV)"
+      - "F. Settlement/closing procedures"
+      - "G. Prorations and settlement statements"
+      - "H. Qualified Mortgage (QM) rules"
+
+  - number: "VIII"
+    title: "Real Estate Math Calculations"
+    weight_pct: 10
+    subtopics:
+      - "A. Commission calculations"
+      - "B. Property tax calculations (assessed value, mill rate)"
+      - "C. Loan calculations (interest, amortization, LTV)"
+      - "D. Prorations (taxes, insurance, rent)"
+      - "E. Area and volume calculations"
+      - "F. Capitalization / GRM calculations"
+      - "G. Profit/loss and capital gain calculations"
+      - "H. Qualifying ratios (front-end, back-end)"
