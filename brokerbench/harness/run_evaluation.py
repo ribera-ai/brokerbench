@@ -50,7 +50,14 @@ def load_instances(dataset_name: str) -> list[Instance]:
             sys.exit(1)
         instances = _load_jsonl_instances(path)
 
-    return instances
+    # Deduplicate by instance_id (keep first occurrence)
+    seen: set[str] = set()
+    unique: list[Instance] = []
+    for inst in instances:
+        if inst.instance_id not in seen:
+            seen.add(inst.instance_id)
+            unique.append(inst)
+    return unique
 
 
 def _load_jsonl_instances(path: Path) -> list[Instance]:
