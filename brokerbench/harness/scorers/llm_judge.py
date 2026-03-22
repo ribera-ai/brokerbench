@@ -67,7 +67,7 @@ def _call_openrouter(
 
 def _extract_score(text: str) -> float | None:
     """Pull the first decimal or integer score (0-1 range) from text."""
-    m = re.search(r"\b([01](?:\.\d{1,2})?)\b", text)
+    m = re.search(r'"score"\s*:\s*([01](?:\.\d{1,2})?)', text)
     if m:
         val = float(m.group(1))
         if 0.0 <= val <= 1.0:
