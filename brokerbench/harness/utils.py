@@ -9,9 +9,14 @@ import re
 # 2. Common answer prefix patterns like "Answer: B", "The answer is B"
 # 3. Standalone letter on its own line
 _MCQ_PATTERNS: list[re.Pattern[str]] = [
+    # Markdown-bold letter at the start: **B**, **B.**, **B)**
+    re.compile(r"^\s*\*\*([A-Da-d])\*\*", re.MULTILINE),
     re.compile(r"^\s*([A-Da-d])\s*[\.\)\:]", re.MULTILINE),
     re.compile(r"^\s*([A-Da-d])\s*$", re.MULTILINE),
-    re.compile(r"(?:answer|choice|option)\s*(?:is|:)\s*([A-Da-d])\b", re.IGNORECASE),
+    re.compile(
+        r"(?:answer|choice|option)\s*(?:is|:)\s*\*?\*?([A-Da-d])\*?\*?",
+        re.IGNORECASE,
+    ),
     re.compile(r"\b([A-Da-d])\s*[\.\)\:]"),
 ]
 
