@@ -139,7 +139,7 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="contingency_management",
         question=(
-            "An appraisal comes in at $380,000 on a property under contract for"
+            "An appraisal comes in at $380,000 on a property under contract for "
             "$400,000. The appraisal contingency is still in effect. The buyer may:"
         ),
         choices=[
@@ -164,7 +164,7 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="timeline_coordination",
         question=(
-            "A transaction coordinator discovers that the buyer's home inspection,"
+            "A transaction coordinator discovers that the buyer's home inspection, "
             "appraisal, and loan approval are all scheduled for the same week, two "
             "weeks before closing. What is the PRIMARY risk?"
         ),

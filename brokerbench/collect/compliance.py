@@ -77,8 +77,8 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         choices=[
             "A. Is exempt because the building was built before the ADA",
             (
-                "B. May be in violation because multifamily buildings with 4+ units built after "
-                "March 1991 must meet accessibility requirements"
+                "B. May be in violation because multifamily buildings with 4+ units first "
+                "occupied after March 13, 1991 must meet accessibility requirements"
             ),
             "C. Is exempt because the Fair Housing Act does not address accessibility",
             "D. Must retrofit all units immediately",
