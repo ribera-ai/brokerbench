@@ -71,7 +71,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="fair_housing",
         question=(
-            "An apartment complex built in 1990 has no wheelchair-accessible units."
+            "An apartment complex built in 1990 has no wheelchair-accessible units. "
             "Under the Fair Housing Act, the owner:"
         ),
         choices=[
@@ -239,7 +239,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="environmental",
         question=(
-            "A commercial property buyer discovers underground storage tanks (USTs)"
+            "A commercial property buyer discovers underground storage tanks (USTs) "
             "during due diligence. Under CERCLA, the buyer can claim the innocent "
             "landowner defense ONLY if:"
         ),
@@ -373,7 +373,7 @@ ALL_COMPLIANCE_INSTANCES: list[Instance] = [
         domain=Domain.COMPLIANCE,
         subdomain="environmental",
         question=(
-            "A property owner hires a contractor to renovate a home built in 1965."
+            "A property owner hires a contractor to renovate a home built in 1965. "
             "Under the EPA's RRP (Renovation, Repair, and Painting) Rule, the "
             "contractor must:"
         ),

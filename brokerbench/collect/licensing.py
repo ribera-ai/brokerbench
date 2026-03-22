@@ -89,7 +89,7 @@ _TOPIC_I: list[Instance] = [
         question=(
             "A homeowner installs a custom built-in bookshelf unit in their living "
             "room, anchored to the wall studs. When they sell the property, the "
-            "buyer expects the bookshelf to remain. The seller wants to take it."
+            "buyer expects the bookshelf to remain. The seller wants to take it. "
             "Under standard fixture analysis, who prevails?"
         ),
         choices=[
@@ -295,7 +295,7 @@ _TOPIC_II: list[Instance] = [
         subdomain="ownership_and_title",
         question=(
             "Three friends purchase a property as joint tenants. One friend later "
-            "sells their interest to a fourth party without the others' knowledge."
+            "sells their interest to a fourth party without the others' knowledge. "
             "What form of ownership exists after the sale?"
         ),
         choices=[
@@ -799,7 +799,7 @@ _TOPIC_IV: list[Instance] = [
         subdomain="contracts_and_agency",
         question=(
             "A listing agent receives an offer on their listing and simultaneously "
-            "has a buyer client who wants to make an offer on the same property."
+            "has a buyer client who wants to make an offer on the same property. "
             "The broker must:"
         ),
         choices=[
@@ -1299,7 +1299,7 @@ _TOPIC_VI: list[Instance] = [
         subdomain="disclosures_and_environmental",
         question=(
             "A listing agent learns from a neighbor that the property next door was "
-            "formerly a dry cleaning business with potential soil contamination."
+            "formerly a dry cleaning business with potential soil contamination. "
             "The listing agent should:"
         ),
         choices=[
@@ -1324,7 +1324,7 @@ _TOPIC_VI: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="disclosures_and_environmental",
         question=(
-            "A buyer purchasing a property in a known flood zone must obtain floodinsurance if:"
+            "A buyer purchasing a property in a known flood zone must obtain flood insurance if:"
         ),
         choices=[
             "A. The property is in any FEMA-designated flood zone",
@@ -1352,7 +1352,7 @@ _TOPIC_VI: list[Instance] = [
         subdomain="disclosures_and_environmental",
         question=(
             "A commercial property is being sold. The buyer's Phase I Environmental "
-            "Site Assessment reveals 'recognized environmental conditions' (RECs)."
+            "Site Assessment reveals 'recognized environmental conditions' (RECs). "
             "The buyer wants to proceed. As the broker, what should you advise?"
         ),
         choices=[
@@ -1643,7 +1643,7 @@ _TOPIC_VIII: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="real_estate_math",
         question=(
-            "A property's market value is $350,000. The assessment ratio is 85%."
+            "A property's market value is $350,000. The assessment ratio is 85%. "
             "The tax rate is 32 mills. What is the annual property tax?"
         ),
         choices=[

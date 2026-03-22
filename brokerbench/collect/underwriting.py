@@ -21,7 +21,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         subdomain="loan_qualification",
         question=(
             "A borrower has a gross monthly income of $8,000, a monthly mortgage "
-            "payment (PITI) of $2,000, and total monthly debt payments of $3,200."
+            "payment (PITI) of $2,000, and total monthly debt payments of $3,200. "
             "What is the borrower's back-end DTI ratio?"
         ),
         choices=[
@@ -151,7 +151,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         subdomain="risk_assessment",
         question=(
             "An appraiser notes that comparable sales used in the appraisal are "
-            "more than 12 months old and located in a different school district."
+            "more than 12 months old and located in a different school district. "
             "The underwriter should:"
         ),
         choices=[
@@ -207,7 +207,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="compliance_flags",
         question=(
-            "A borrower is using a gift from a family member for the entire 3.5%"
+            "A borrower is using a gift from a family member for the entire 3.5% "
             "FHA down payment. Which of the following is required?"
         ),
         choices=[
@@ -397,7 +397,7 @@ ALL_UNDERWRITING_INSTANCES: list[Instance] = [
         domain=Domain.UNDERWRITING,
         subdomain="risk_assessment",
         question=(
-            "A borrower is purchasing an investment property with 25% down."
+            "A borrower is purchasing an investment property with 25% down. "
             "Compared to a primary residence purchase, the underwriter should "
             "expect:"
         ),

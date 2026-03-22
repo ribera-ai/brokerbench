@@ -47,7 +47,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="agent_recruitment",
         question=(
-            "A brokerage wants to attract experienced agents from competitors."
+            "A brokerage wants to attract experienced agents from competitors. "
             "Which strategy carries the MOST legal risk?"
         ),
         choices=[
@@ -122,7 +122,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         domain=Domain.BROKERAGE_MANAGEMENT,
         subdomain="financial_management",
         question=(
-            "A brokerage earned $2,400,000 in gross commission income last year."
+            "A brokerage earned $2,400,000 in gross commission income last year. "
             "Operating expenses were $1,800,000 including agent splits. The "
             "brokerage's company dollar (net revenue) is:"
         ),

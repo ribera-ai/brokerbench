@@ -140,7 +140,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         subdomain="investment_advisory",
         question=(
             "A client asks their agent about the potential return on a rental "
-            "property priced at $300,000 that generates $2,400/month in gross rent."
+            "property priced at $300,000 that generates $2,400/month in gross rent. "
             "The gross rent multiplier (GRM) is:"
         ),
         choices=[
@@ -193,7 +193,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         subdomain="negotiation_strategy",
         question=(
             "During negotiations, the buyer's agent receives a counteroffer that "
-            "expires in 24 hours. The buyer wants to submit a counter-counteroffer."
+            "expires in 24 hours. The buyer wants to submit a counter-counteroffer. "
             "The agent should advise:"
         ),
         choices=[
@@ -251,7 +251,7 @@ ALL_CLIENT_ADVISORY_INSTANCES: list[Instance] = [
         domain=Domain.CLIENT_ADVISORY,
         subdomain="relocation_services",
         question=(
-            "A corporate relocation client needs to purchase a home within 60 days."
+            "A corporate relocation client needs to purchase a home within 60 days. "
             "The agent should FIRST:"
         ),
         choices=[
