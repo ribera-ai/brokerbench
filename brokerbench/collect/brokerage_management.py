@@ -339,7 +339,7 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
         subdomain="financial_management",
         question=(
             "A brokerage offers agents three commission split options: 70/30, 80/20 "
-            "with a desk fee, or 100% with a flat monthly fee. An agent closing"
+            "with a desk fee, or 100% with a flat monthly fee. An agent closing "
             "$200,000 in annual GCI would earn the MOST under which plan?"
         ),
         choices=[
@@ -348,13 +348,13 @@ ALL_BROKERAGE_INSTANCES: list[Instance] = [
             "C. 100% with $2,000/month flat fee",
             "D. All plans yield the same income",
         ],
-        expected_answer="A",
+        expected_answer="C",
         explanation=(
             "70/30: $200,000 x 0.70 = $140,000. 80/20 with desk fee: ($200,000 x "
             "0.80) - ($500 x 12) = $160,000 - $6,000 = $154,000. 100% with flat "
-            "fee: $200,000 - ($2,000 x 12) = $200,000 - $24,000 = $176,000. Wait - "
-            "100% plan yields most at $176K. Let me recalculate: the 100% plan "
-            "yields $176,000, which is highest."
+            "fee: $200,000 - ($2,000 x 12) = $200,000 - $24,000 = $176,000. The "
+            "100% commission plan with a $2,000/month flat fee yields the highest "
+            "net income at $176,000."
         ),
         cognitive_level=CognitiveLevel.ANALYSIS,
         exam_type=ExamType.BROKER,

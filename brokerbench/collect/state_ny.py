@@ -117,7 +117,7 @@ ALL_NY_INSTANCES: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="licensing",
         question=(
-            "New York real estate salespersons must complete a 77-hour qualifyingcourse before:"
+            "New York real estate salespersons must complete a 77-hour qualifying course before:"
         ),
         choices=[
             "A. Showing any properties",

@@ -43,7 +43,8 @@ ALL_TX_INSTANCES: list[Instance] = [
         domain=Domain.LICENSING,
         subdomain="property_rights",
         question=(
-            "Texas is a community property state. This means that property acquiredduring marriage:"
+            "Texas is a community property state. This means that property "
+            "acquired during marriage:"
         ),
         choices=[
             "A. Belongs solely to the spouse who purchased it",

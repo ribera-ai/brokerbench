@@ -194,7 +194,7 @@ ALL_TRANSACTION_INSTANCES: list[Instance] = [
         domain=Domain.TRANSACTION_MANAGEMENT,
         subdomain="document_management",
         question=(
-            "Which of the following is NOT typically required at a residential realestate closing?"
+            "Which of the following is NOT typically required at a residential real estate closing?"
         ),
         choices=[
             "A. Deed of trust or mortgage",
