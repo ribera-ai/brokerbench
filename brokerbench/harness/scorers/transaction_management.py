@@ -75,7 +75,9 @@ def score_process_quality(
         "3. Professionalism -- Is the advice appropriate for "
         "a real estate professional?\n\n"
         "Gold answer for reference:\n"
-        f"{instance.expected_answer}"
+        f"{instance.expected_answer}\n\n"
+        "Gold explanation:\n"
+        f"{instance.explanation}"
     )
     response_text = prediction.reasoning or prediction.prediction
     return llm_judge_score(
