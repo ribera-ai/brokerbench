@@ -10,6 +10,10 @@ class Domain(str, Enum):
     UNDERWRITING = "underwriting"
     LEGAL = "legal"
     MARKETING = "marketing"
+    TRANSACTION_MANAGEMENT = "transaction_management"
+    COMPLIANCE = "compliance"
+    BROKERAGE_MANAGEMENT = "brokerage_management"
+    CLIENT_ADVISORY = "client_advisory"
 
 
 class CognitiveLevel(str, Enum):
@@ -18,6 +22,7 @@ class CognitiveLevel(str, Enum):
     KNOWLEDGE = "knowledge"
     APPLICATION = "application"
     ANALYSIS = "analysis"
+    EXPERT = "expert"
 
 
 class ExamType(str, Enum):
@@ -40,10 +45,14 @@ DEFAULT_PASS_THRESHOLD = 0.70
 
 # Domain weight defaults (must sum to 1.0)
 DEFAULT_DOMAIN_WEIGHTS: dict[Domain, float] = {
-    Domain.LICENSING: 0.30,
-    Domain.UNDERWRITING: 0.30,
-    Domain.LEGAL: 0.25,
-    Domain.MARKETING: 0.15,
+    Domain.LICENSING: 0.15,
+    Domain.UNDERWRITING: 0.15,
+    Domain.LEGAL: 0.10,
+    Domain.MARKETING: 0.08,
+    Domain.TRANSACTION_MANAGEMENT: 0.15,
+    Domain.COMPLIANCE: 0.12,
+    Domain.BROKERAGE_MANAGEMENT: 0.13,
+    Domain.CLIENT_ADVISORY: 0.12,
 }
 
 # Licensing exam topic areas (Pearson VUE / PSI national content outline)

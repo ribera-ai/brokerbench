@@ -32,6 +32,13 @@ class Instance(BaseModel):
     context: str = Field(
         default="", description="Additional context (e.g. contract excerpt, loan file data)"
     )
+    format: str = Field(
+        default="mcq",
+        description=(
+            "Question format: mcq, open_ended, calculation, "
+            "multi_turn, issue_spotting, document_analysis"
+        ),
+    )
     metadata: dict[str, str] = Field(
         default_factory=dict, description="Arbitrary key-value metadata"
     )
