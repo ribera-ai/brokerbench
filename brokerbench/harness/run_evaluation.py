@@ -20,6 +20,7 @@ from rich.table import Table
 from brokerbench.harness.constants import DEFAULT_DOMAIN_WEIGHTS, Domain, ResolutionStatus
 from brokerbench.harness.grading import DomainResult, EvalResult, InstanceResult, ScoreDetail
 from brokerbench.harness.reporting import generate_markdown_report
+from brokerbench.harness.shuffle import shuffle_instances, shuffling_enabled
 from brokerbench.harness.types import Instance, Prediction
 from brokerbench.harness.utils import extract_mcq_answer
 
@@ -57,6 +58,12 @@ def load_instances(dataset_name: str) -> list[Instance]:
         if inst.instance_id not in seen:
             seen.add(inst.instance_id)
             unique.append(inst)
+
+    # Apply the same deterministic answer-position shuffle that
+    # ``brokerbench.inference.load_instances`` uses, so the harness
+    # grades against the choices the model actually saw.
+    if shuffling_enabled():
+        unique = shuffle_instances(unique)
     return unique
 
 

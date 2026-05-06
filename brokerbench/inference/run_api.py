@@ -23,6 +23,32 @@ from brokerbench.inference import build_prompt, load_instances
 
 console = Console()
 
+# Reasoning-style frontier models (Claude 4.x thinking, GPT-5, Gemini
+# 2.5 Pro thinking, Grok 4, Kimi K2 thinking, etc.) routinely emit
+# multi-thousand-token chain-of-thought before the final letter.  4096
+# is a safe default; override with ``BROKERBENCH_MAX_TOKENS`` for very
+# verbose deep-reasoning runs.
+_DEFAULT_MAX_TOKENS = 4096
+
+
+def _max_tokens() -> int:
+    """Resolve max output tokens from the env, falling back to the default."""
+    raw = os.environ.get("BROKERBENCH_MAX_TOKENS", "").strip()
+    if not raw:
+        return _DEFAULT_MAX_TOKENS
+    try:
+        value = int(raw)
+    except ValueError:
+        console.print(
+            f"[yellow]Invalid BROKERBENCH_MAX_TOKENS={raw!r}; using default {_DEFAULT_MAX_TOKENS}"
+            "[/yellow]"
+        )
+        return _DEFAULT_MAX_TOKENS
+    if value < 64:
+        console.print(f"[yellow]BROKERBENCH_MAX_TOKENS={value} too small; using 64[/yellow]")
+        return 64
+    return value
+
 
 def run_openai(
     instances: list[Instance],
@@ -47,6 +73,7 @@ def run_openai(
 
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
     predictions: list[Prediction] = []
+    max_tokens = _max_tokens()
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -67,7 +94,7 @@ def run_openai(
                         {"role": "user", "content": prompt},
                     ],
                     temperature=0,
-                    max_tokens=1024,
+                    max_tokens=max_tokens,
                 )
                 raw_output = response.choices[0].message.content or ""
 
@@ -125,6 +152,7 @@ def run_anthropic(
 
     client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
     predictions: list[Prediction] = []
+    max_tokens = _max_tokens()
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -134,7 +162,7 @@ def run_anthropic(
             try:
                 response = client.messages.create(
                     model=model_name,
-                    max_tokens=1024,
+                    max_tokens=max_tokens,
                     temperature=0,
                     system=(
                         "You are a knowledgeable real estate professional "
@@ -210,6 +238,7 @@ def run_openrouter(
         base_url="https://openrouter.ai/api/v1",
     )
     predictions: list[Prediction] = []
+    max_tokens = _max_tokens()
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -230,7 +259,7 @@ def run_openrouter(
                         {"role": "user", "content": prompt},
                     ],
                     temperature=0,
-                    max_tokens=1024,
+                    max_tokens=max_tokens,
                 )
                 raw_output = response.choices[0].message.content or ""
 
@@ -290,6 +319,7 @@ def run_google(
 
     client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", ""))
     predictions: list[Prediction] = []
+    max_tokens = _max_tokens()
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -306,7 +336,7 @@ def run_google(
                             "taking an evaluation. Answer accurately and concisely."
                         ),
                         "temperature": 0,
-                        "max_output_tokens": 1024,
+                        "max_output_tokens": max_tokens,
                     },
                 )
                 raw_output = response.text or ""
