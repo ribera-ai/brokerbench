@@ -92,24 +92,39 @@ Run all frontier models to establish baseline scores:
 export OPENAI_API_KEY=...
 export ANTHROPIC_API_KEY=...
 export GEMINI_API_KEY=...
+export OPENROUTER_API_KEY=...   # used for the newer frontier models
 
-# Run all baselines (Claude Sonnet 4, Claude Opus 4, Gemini 2.5 Pro, GPT-4o, GPT-5)
+# Naive baselines first (always-A/B/C/D, uniform-random, most-common)
+./scripts/run_baselines.sh naive
+
+# Then real models
 ./scripts/run_baselines.sh
 
 # Or run a single model
 ./scripts/run_baselines.sh gemini-2.5-pro
+./scripts/run_baselines.sh anthropic/claude-sonnet-4.6
 
 # View results
 ls logs/run_evaluation/
 ```
 
-| Provider | Model | CLI |
-|----------|-------|-----|
-| Anthropic | `claude-sonnet-4-20250514` | `--provider anthropic` |
-| Anthropic | `claude-opus-4-20250514` | `--provider anthropic` |
-| Google | `gemini-2.5-pro` | `--provider google` |
-| OpenAI | `gpt-4o` | `--provider openai` |
-| OpenAI | `gpt-5` | `--provider openai` |
+| Provider   | Model                              | CLI                         |
+|------------|------------------------------------|-----------------------------|
+| Anthropic  | `claude-sonnet-4-20250514`         | `--provider anthropic`      |
+| Anthropic  | `claude-opus-4-20250514`           | `--provider anthropic`      |
+| Google     | `gemini-2.5-pro`                   | `--provider google`         |
+| OpenAI     | `gpt-4o`                           | `--provider openai`         |
+| OpenAI     | `gpt-5`                            | `--provider openai`         |
+| OpenRouter | `anthropic/claude-sonnet-4.6`      | `--provider openrouter`     |
+| OpenRouter | `moonshotai/kimi-k2.6`             | `--provider openrouter`     |
+| OpenRouter | `mistralai/mistral-medium-3-5m`    | `--provider openrouter`     |
+| OpenRouter | `x-ai/grok-4.3`                    | `--provider openrouter`     |
+| OpenRouter | `openai/gpt-5.5`                   | `--provider openrouter`     |
+
+Read [`docs/methodology.md`](docs/methodology.md) before publishing
+any cross-model comparison — in particular the answer-position
+shuffle and the naive baseline floors that every real-model score
+should clear.
 
 ## Running Against BrokerBot
 
