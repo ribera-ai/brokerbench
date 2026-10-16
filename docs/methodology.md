@@ -78,10 +78,10 @@ clear the 30% naive ceiling.
 
 ## 3. Reasoning-Model Token Budget
 
-The default `max_tokens` for API calls is **4096** to accommodate
-deep-reasoning models (Claude 4.x thinking, GPT-5 thinking, Grok 4
-deep think, Kimi K2 thinking, Gemini 2.5 Pro thinking).  Override
-with the `BROKERBENCH_MAX_TOKENS` environment variable.
+The default output-token budget for API calls is **4096** to
+accommodate deep-reasoning models (Claude 4.6+/5.x adaptive thinking,
+GPT-5/6, Grok 4, Kimi K3, Gemini 3/4 thinking).  Override with the
+`BROKERBENCH_MAX_TOKENS` environment variable.
 
 ```
 BROKERBENCH_MAX_TOKENS=8192 python -m brokerbench.inference.run_api ...
@@ -94,10 +94,36 @@ Models with a `/` in the identifier are routed through OpenRouter
 to extend: a single `OPENROUTER_API_KEY` secret unlocks every
 non-anchor frontier model in the matrix workflow.
 
-The "anchor" baseline models (Claude Sonnet 4, Claude Opus 4, Gemini
-2.5 Pro, GPT-4o, GPT-5) are still hit through their native SDKs so
-that any drift versus published vendor scores is attributable to
-prompting / scoring rather than to a third-party gateway.
+The "anchor" baseline models (Claude Sonnet 5.5, Claude Opus 5.5,
+Gemini 4 Argon, GPT-5.5, GPT-6.1) are still hit through their native
+SDKs so that any drift versus published vendor scores is attributable
+to prompting / scoring rather than to a third-party gateway.
+
+## 4a. Provider API Compatibility
+
+The API surface differs materially between generations:
+
+- **OpenAI reasoning models** (`gpt-5*`, `gpt-6*`, `o*`): served
+  through the Responses API (`client.responses.create`); they reject
+  `temperature` and `max_tokens`.  Legacy chat models keep
+  Chat Completions with `temperature=0`.
+- **Claude 4.6+/5.x/Fable/Mythos**: adaptive thinking is on by
+  default and `temperature` is not configurable, so it is omitted.
+  Older Claude models keep `temperature=0`.
+- **OpenRouter**: `temperature` is omitted for reasoning-family
+  upstream models (same rules as above, applied to the id after the
+  provider prefix).
+- **Gemini**: `temperature=0` is still accepted on 3.x/4.x; thinking
+  is managed by the API.
+
+## 4b. Request Concurrency
+
+`run_api` issues requests with a bounded thread pool
+(`--max_concurrency`, default 8; `BROKERBENCH_MAX_CONCURRENCY`).
+Predictions are always written in dataset order, so output files are
+diff-stable across runs.  Transient provider errors are retried with
+exponential backoff (4 attempts) before an instance is recorded as an
+error.
 
 ## 5. Open Caveats
 

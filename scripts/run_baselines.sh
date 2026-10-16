@@ -3,7 +3,7 @@
 #
 # Usage:
 #   ./scripts/run_baselines.sh              # run all baselines
-#   ./scripts/run_baselines.sh gpt-4o       # run a single model
+#   ./scripts/run_baselines.sh gpt-5.5      # run a single model
 #
 # Required env vars (set whichever providers you want to run):
 #   OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY
@@ -27,18 +27,18 @@ mkdir -p "$PREDICTIONS_DIR"
 #     '/' so the provider auto-detector below picks 'openrouter'.
 BASELINES=(
     # Anchor / regression baselines (native APIs)
-    "anthropic claude-sonnet-4-20250514"
-    "anthropic claude-opus-4-20250514"
-    "google gemini-2.5-pro"
-    "openai gpt-4o"
-    "openai gpt-5"
+    "anthropic claude-sonnet-5-5"
+    "anthropic claude-opus-5-5"
+    "google gemini-4-argon"
+    "openai gpt-5.5"
+    "openai gpt-6.1-sol"
 
-    # Newer frontier models routed through OpenRouter
-    "openrouter anthropic/claude-sonnet-4.6"
-    "openrouter moonshotai/kimi-k2.6"
-    "openrouter mistralai/mistral-medium-3-5m"
-    "openrouter x-ai/grok-4.3"
-    "openrouter openai/gpt-5.5"
+    # Additional frontier models routed through OpenRouter
+    "openrouter anthropic/claude-fable-5.1"
+    "openrouter google/gemini-3.1-pro-preview"
+    "openrouter moonshotai/kimi-k3"
+    "openrouter mistralai/mistral-large-2512"
+    "openrouter x-ai/grok-4.7"
 )
 
 run_model() {

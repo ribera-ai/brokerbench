@@ -2,7 +2,7 @@
 
 Usage:
     python -m brokerbench.harness.run_evaluation \
-        --predictions_path predictions/claude-3-sonnet.jsonl \
+        --predictions_path predictions/claude-sonnet-5-5.jsonl \
         --dataset_name all \
         --run_id my-eval-run
 """

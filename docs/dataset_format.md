@@ -52,7 +52,7 @@ Each line in a dataset JSONL file represents one benchmark instance:
 ```json
 {
   "instance_id": "licensing-national-042",
-  "model_name_or_path": "claude-3-sonnet",
+  "model_name_or_path": "claude-sonnet-5-5",
   "prediction": "B",
   "reasoning": "The inspection contingency gives the buyer the right to...",
   "raw_output": "B. The buyer may rescind...",
