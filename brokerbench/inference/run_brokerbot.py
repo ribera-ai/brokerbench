@@ -1,10 +1,17 @@
-"""Run inference against BrokerBot via the monorepo's /api/generate endpoint.
+"""Run inference against BrokerBot's V2 agent gateway POST /generate endpoint.
+
+The gateway speaks the channel pipeline (the same path Slack/SMS/web chat use).
+Auth is either an HS256 JWT signed with the deployment's BETTER_AUTH_SECRET
+(claims: teamId, agentId, userId, optional teamSlug) or a raw Better Auth
+session token sent as Bearer alongside an x-team-id header.
 
 Usage:
     python -m brokerbench.inference.run_brokerbot \
-        --agent_url http://localhost:4100/api/generate \
-        --team_id clxxxxxxxxxxxxxxxxx \
-        --auth_token "bench-test-token-12345" \
+        --agent_url http://localhost:4200/generate \
+        --team_id <team-uuid> \
+        --user_id <user-id> \
+        --agent_id <agent-uuid> \
+        --auth_token <jwt-or-session-token> \
         --dataset all \
         --output_file predictions/brokerbot.jsonl
 """
@@ -15,152 +22,147 @@ import argparse
 import json
 import os
 import sys
+import uuid
+from collections.abc import Callable
 from pathlib import Path
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from rich.console import Console
-from tqdm import tqdm
 
 from brokerbench.harness.types import Instance, Prediction
-from brokerbench.harness.utils import extract_mcq_answer
 from brokerbench.inference import build_prompt, load_instances
+from brokerbench.inference.run_api import _max_concurrency, _run_instances
 
 console = Console()
+
+_REQUEST_TIMEOUT = 300  # channel turns can run multi-step tool loops
+
+
+def _make_predict(
+    agent_url: str,
+    team_id: str,
+    user_id: str,
+    agent_id: str | None,
+    channel: str,
+    auth_token: str | None,
+) -> Callable[[Instance], str]:
+    def predict(instance: Instance) -> str:
+        prompt = build_prompt(instance)
+        body: dict[str, object] = {
+            "teamId": team_id,
+            "userId": user_id,
+            "channel": channel,
+            "messageText": prompt,
+            "messageId": f"bench-{instance.instance_id}-{uuid.uuid4().hex[:8]}",
+            "chatId": str(uuid.uuid4()),
+        }
+        if agent_id:
+            body["agentId"] = agent_id
+
+        headers: dict[str, str] = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
+        if auth_token:
+            headers["Authorization"] = f"Bearer {auth_token}"
+
+        def call() -> str:
+            req = Request(
+                agent_url,
+                data=json.dumps(body).encode("utf-8"),
+                headers=headers,
+                method="POST",
+            )
+            with urlopen(req, timeout=_REQUEST_TIMEOUT) as resp:
+                ctype = resp.headers.get("Content-Type", "")
+                raw: str = resp.read().decode("utf-8")
+            if "application/json" in ctype:
+                data = json.loads(raw)
+                if isinstance(data, dict) and "error" in data:
+                    raise RuntimeError(str(data["error"]))
+                return str(data.get("text", raw))
+            return raw
+
+        return call()
+
+    return predict
 
 
 def run_brokerbot(
     instances: list[Instance],
     agent_url: str,
     team_id: str,
+    user_id: str,
     output_path: Path,
+    agent_id: str | None = None,
+    channel: str = "web",
     auth_token: str | None = None,
-    template: str = "brokerbot",
+    max_concurrency: int = 8,
 ) -> list[Prediction]:
-    """Run inference against BrokerBot's /api/generate endpoint.
-
-    Sends each instance as a message to the BrokerBot generate endpoint
-    and collects the non-streaming response as a prediction.
-
-    Args:
-        instances: List of benchmark instances to evaluate.
-        agent_url: URL of the /api/generate endpoint.
-        team_id: Team ID to scope the request.
-        output_path: Path to write prediction JSONL.
-        auth_token: Bearer token for authentication (raw session token
-            stored in the Session table).
-        template: Agent type to use (default: "brokerbot").
-
-    Returns:
-        List of Prediction objects.
-    """
-    predictions: list[Prediction] = []
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(output_path, "w") as f:
-        for instance in tqdm(instances, desc="Running BrokerBot"):
-            prompt = build_prompt(instance)
-
-            try:
-                payload = json.dumps(
-                    {
-                        "message": prompt,
-                        "teamId": team_id,
-                        "template": template,
-                        "persist": False,
-                    }
-                ).encode("utf-8")
-
-                headers: dict[str, str] = {
-                    "Content-Type": "application/json",
-                }
-                if auth_token:
-                    headers["Authorization"] = f"Bearer {auth_token}"
-
-                req = Request(
-                    agent_url,
-                    data=payload,
-                    headers=headers,
-                    method="POST",
-                )
-                with urlopen(req, timeout=120) as resp:
-                    response_data = json.loads(resp.read().decode("utf-8"))
-
-                raw_output = response_data.get("text", "")
-                usage = response_data.get("usage", {})
-                steps = response_data.get("steps", 0)
-
-                # Extract answer letter for MCQ
-                answer = raw_output
-                if instance.choices:
-                    extracted = extract_mcq_answer(raw_output)
-                    if extracted:
-                        answer = extracted
-
-                pred = Prediction(
-                    instance_id=instance.instance_id,
-                    model_name_or_path="brokerbot",
-                    prediction=answer,
-                    reasoning=raw_output,
-                    raw_output=raw_output,
-                    metadata={
-                        "usage": json.dumps(usage),
-                        "steps": str(steps),
-                    },
-                )
-            except (URLError, TimeoutError, json.JSONDecodeError) as e:
-                console.print(f"[yellow]Error on {instance.instance_id}: {e}[/yellow]")
-                pred = Prediction(
-                    instance_id=instance.instance_id,
-                    model_name_or_path="brokerbot",
-                    prediction="",
-                    reasoning="",
-                    raw_output=str(e),
-                    metadata={"error": str(e)},
-                )
-
-            predictions.append(pred)
-            f.write(pred.model_dump_json() + "\n")
-
-    return predictions
+    """Run inference against the agent gateway /generate endpoint."""
+    return _run_instances(
+        instances,
+        "brokerbot",
+        output_path,
+        _make_predict(agent_url, team_id, user_id, agent_id, channel, auth_token),
+        max_concurrency,
+    )
 
 
 def main() -> None:
     """CLI entry point for BrokerBot inference."""
-    parser = argparse.ArgumentParser(description="Run BrokerBot against the BrokerBench benchmark.")
+    parser = argparse.ArgumentParser(
+        description="Run BrokerBot (V2 agent gateway) against the BrokerBench benchmark."
+    )
     parser.add_argument(
         "--agent_url",
         type=str,
-        default="http://localhost:4100/api/generate",
-        help="URL of the /api/generate endpoint (default: http://localhost:4100/api/generate).",
+        default=os.environ.get("BROKERBOT_GATEWAY_URL", "http://localhost:4200/generate"),
+        help="Agent gateway /generate URL (or set BROKERBOT_GATEWAY_URL).",
     )
     parser.add_argument(
         "--team_id",
         type=str,
         default=os.environ.get("BROKERBOT_TEAM_ID", ""),
-        help="Team ID for the BrokerBot request (or set BROKERBOT_TEAM_ID env var).",
+        help="Team ID (or set BROKERBOT_TEAM_ID).",
+    )
+    parser.add_argument(
+        "--user_id",
+        type=str,
+        default=os.environ.get("BROKERBOT_USER_ID", ""),
+        help="User ID the turn runs as (or set BROKERBOT_USER_ID).",
+    )
+    parser.add_argument(
+        "--agent_id",
+        type=str,
+        default=os.environ.get("BROKERBOT_AGENT_ID", ""),
+        help="Agent ID — required when the JWT carries an agentId claim "
+        "(or set BROKERBOT_AGENT_ID).",
+    )
+    parser.add_argument(
+        "--channel",
+        type=str,
+        default="web",
+        help="Channel to run the turn as (default: web).",
     )
     parser.add_argument(
         "--auth_token",
         type=str,
         default=os.environ.get("BROKERBOT_AUTH_TOKEN", ""),
-        help=(
-            "Bearer token for authentication "
-            "(raw session token from the Session table), "
-            "or set BROKERBOT_AUTH_TOKEN env var."
-        ),
-    )
-    parser.add_argument(
-        "--template",
-        type=str,
-        default="brokerbot",
-        help="Agent type to use (default: brokerbot).",
+        help="Bearer JWT or Better Auth session token (or set BROKERBOT_AUTH_TOKEN).",
     )
     parser.add_argument(
         "--dataset",
         type=str,
         default="all",
-        help="Path to dataset JSONL file, or 'all' for all built-in datasets.",
+        help="Dataset name or path, or 'all' for all built-in datasets.",
+    )
+    parser.add_argument(
+        "--max_concurrency",
+        type=int,
+        default=None,
+        help="Max concurrent requests (default 8, or BROKERBENCH_MAX_CONCURRENCY).",
     )
     parser.add_argument(
         "--output_file",
@@ -171,27 +173,37 @@ def main() -> None:
     args = parser.parse_args()
 
     if not args.team_id:
-        console.print("[red]--team_id is required (or set BROKERBOT_TEAM_ID env var)[/red]")
+        console.print("[red]--team_id is required (or BROKERBOT_TEAM_ID)[/red]")
         sys.exit(1)
+    if not args.user_id:
+        console.print("[red]--user_id is required (or BROKERBOT_USER_ID)[/red]")
+        sys.exit(1)
+
+    auth_token = args.auth_token or None
+    if not auth_token:
+        console.print(
+            "[yellow]Warning: no auth token — requests will fail unless the "
+            "gateway is unauthenticated.[/yellow]"
+        )
 
     instances = load_instances(args.dataset)
     console.print(f"Loaded {len(instances)} instances")
 
-    auth_token = args.auth_token if args.auth_token else None
-    if not auth_token:
-        console.print(
-            "[yellow]Warning: No auth token provided. "
-            "Requests may fail if the endpoint requires authentication.[/yellow]"
+    try:
+        run_brokerbot(
+            instances,
+            args.agent_url,
+            args.team_id,
+            args.user_id,
+            args.output_file,
+            agent_id=args.agent_id or None,
+            channel=args.channel,
+            auth_token=auth_token,
+            max_concurrency=_max_concurrency(args.max_concurrency),
         )
-
-    run_brokerbot(
-        instances,
-        args.agent_url,
-        args.team_id,
-        args.output_file,
-        auth_token=auth_token,
-        template=args.template,
-    )
+    except (HTTPError, URLError) as e:
+        console.print(f"[red]Fatal: {e}[/red]")
+        sys.exit(1)
     console.print(f"[green]Predictions written to {args.output_file}[/green]")
 
 
