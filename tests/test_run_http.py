@@ -15,10 +15,12 @@ from brokerbench.harness.types import Instance
 from brokerbench.inference.run_http import (
     PRESETS,
     _dig,
+    _is_local_host,
     _make_predict,
     _parse_body_template,
     _parse_header,
     _parse_var,
+    _required_vars,
     _resolve_template,
     run_http,
 )
@@ -115,22 +117,26 @@ class TestParseHelpers:
 
 
 class _EchoHandler(BaseHTTPRequestHandler):
-    """Captures the request and replies {text: <body.message>} or an error."""
+    """Captures the request and replies {text: "A"} or an error."""
 
     seen: list[dict[str, Any]] = []
     mode = "ok"
+    content_type = "application/json"
 
     def do_POST(self) -> None:  # noqa: N802
         length = int(self.headers.get("Content-Length", 0))
         body = json.loads(self.rfile.read(length))
         _EchoHandler.seen.append({"body": body, "auth": self.headers.get("Authorization")})
+        payload: Any
         if _EchoHandler.mode == "error":
             payload = {"error": "agent exploded"}
+        elif _EchoHandler.mode == "array":
+            payload = [{"answer": "B"}]
         else:
-            payload = {"text": "A"}
+            payload = {"text": "A", "usage": {"tokens": 7}}
         raw = json.dumps(payload).encode()
         self.send_response(200)
-        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Type", _EchoHandler.content_type)
         self.send_header("Content-Length", str(len(raw)))
         self.end_headers()
         self.wfile.write(raw)
@@ -143,6 +149,7 @@ class _EchoHandler(BaseHTTPRequestHandler):
 def echo_server() -> Any:
     _EchoHandler.seen = []
     _EchoHandler.mode = "ok"
+    _EchoHandler.content_type = "application/json"
     server = ThreadingHTTPServer(("127.0.0.1", 0), _EchoHandler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
@@ -159,6 +166,7 @@ class TestPredict:
             variables={"opt": "set", "tok": "t"},
             response_field="text",
             error_field="error",
+            metadata_fields=[],
             timeout=30,
         )
         assert predict(_instance()) == "A"
@@ -176,6 +184,7 @@ class TestPredict:
             variables={},
             response_field="text",
             error_field="error",
+            metadata_fields=[],
             timeout=30,
         )
         predict(_instance())
@@ -190,10 +199,69 @@ class TestPredict:
             variables={},
             response_field="text",
             error_field="error",
+            metadata_fields=[],
             timeout=30,
         )
         with pytest.raises(RuntimeError, match="agent exploded"):
             predict(_instance())
+
+    def test_vendor_json_suffix_extracts_field(self, echo_server: str) -> None:
+        _EchoHandler.content_type = "application/problem+json"
+        predict = _make_predict(
+            endpoint=f"{echo_server}/chat",
+            body_template={"input": "{message}"},
+            headers={},
+            variables={},
+            response_field="text",
+            error_field="error",
+            metadata_fields=[],
+            timeout=30,
+        )
+        assert predict(_instance()) == "A"
+
+    def test_array_response_uses_response_field(self, echo_server: str) -> None:
+        _EchoHandler.mode = "array"
+        predict = _make_predict(
+            endpoint=f"{echo_server}/chat",
+            body_template={"input": "{message}"},
+            headers={},
+            variables={},
+            response_field="0.answer",
+            error_field="error",
+            metadata_fields=[],
+            timeout=30,
+        )
+        assert predict(_instance()) == "B"
+
+    def test_metadata_fields_captured(self, echo_server: str) -> None:
+        predict = _make_predict(
+            endpoint=f"{echo_server}/chat",
+            body_template={"input": "{message}"},
+            headers={},
+            variables={},
+            response_field="text",
+            error_field="error",
+            metadata_fields=["usage", "missing.field"],
+            timeout=30,
+        )
+        result = predict(_instance())
+        assert isinstance(result, tuple)
+        text, metadata = result
+        assert text == "A"
+        assert metadata == {"usage": "{'tokens': 7}"}
+
+
+class TestGuards:
+    def test_required_vars_detects_missing(self) -> None:
+        body = {"a": "{team_id}", "b": "{opt?}", "c": "{message}"}
+        headers = {"X": "{api_key}"}
+        assert _required_vars(body, headers) == {"team_id", "api_key"}
+
+    def test_is_local_host(self) -> None:
+        for host in ["localhost", "127.0.0.1", "::1", "db.localtest.me"]:
+            assert _is_local_host(host)
+        for host in ["api.example.com", "8.8.8.8"]:
+            assert not _is_local_host(host)
 
 
 class TestRunHttp:

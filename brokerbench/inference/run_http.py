@@ -41,6 +41,7 @@ Usage (BrokerBot's V2 agent gateway via the built-in preset):
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
 import os
 import re
@@ -51,7 +52,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.parse import urlparse
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from rich.console import Console
 
@@ -88,6 +90,7 @@ class EndpointPreset:
     headers: dict[str, str]
     response_field: str | None
     error_field: str | None
+    metadata_fields: list[str] = field(default_factory=list)
     vars_env: dict[str, str] = field(default_factory=dict)
     vars_default: dict[str, str] = field(default_factory=dict)
 
@@ -118,6 +121,7 @@ PRESETS: dict[str, EndpointPreset] = {
         },
         response_field="text",
         error_field="error",
+        metadata_fields=["attachments"],
         vars_env={
             "team_id": "BROKERBOT_TEAM_ID",
             "user_id": "BROKERBOT_USER_ID",
@@ -128,6 +132,12 @@ PRESETS: dict[str, EndpointPreset] = {
         vars_default={"channel": "web"},
     ),
 }
+
+# Placeholders the runner generates per request; everything else in a
+# template is a required or optional --var.
+_BUILTIN_VARS = {"message", "message_id", "chat_id", "instance_id"}
+
+_SENSITIVE_HEADERS = {"authorization", "cookie", "proxy-authorization"}
 
 
 def _resolve_template(obj: Any, ctx: dict[str, Any]) -> Any:
@@ -185,6 +195,64 @@ def _dig(data: Any, path: str) -> Any:
     return data
 
 
+def _required_vars(*templates: Any) -> set[str]:
+    """Required (non-optional) placeholder names in a template."""
+    out: set[str] = set()
+
+    def walk(obj: Any) -> None:
+        if isinstance(obj, dict):
+            for v in obj.values():
+                walk(v)
+        elif isinstance(obj, list):
+            for v in obj:
+                walk(v)
+        elif isinstance(obj, str):
+            for m in _PLACEHOLDER_RE.finditer(obj):
+                if not m.group(0).endswith("?}") and m.group(1) not in _BUILTIN_VARS:
+                    out.add(m.group(1))
+
+    for t in templates:
+        walk(t)
+    return out
+
+
+def _is_local_host(hostname: str) -> bool:
+    """Whether a host resolves locally (loopback/private or localtest.dev)."""
+    host = hostname.lower()
+    if host in {"localhost", "ip6-localhost"} or host.endswith(".localtest.me"):
+        return True
+    try:
+        ip = ipaddress.ip_address(host)
+    except ValueError:
+        return False
+    return ip.is_loopback or ip.is_private
+
+
+class _SensitiveHeaderRedirectHandler(HTTPRedirectHandler):
+    """Redirect handler that strips credentials when the host changes."""
+
+    def redirect_request(
+        self,
+        req: Request,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> Request | None:
+        new_req = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new_req is None:
+            return None
+        if urlparse(newurl).netloc.lower() != urlparse(req.full_url).netloc.lower():
+            for name in list(new_req.headers):
+                if name.lower() in _SENSITIVE_HEADERS:
+                    del new_req.headers[name]
+        return new_req
+
+
+_opener = build_opener(_SensitiveHeaderRedirectHandler())
+
+
 def _make_predict(
     endpoint: str,
     body_template: dict[str, Any],
@@ -192,9 +260,10 @@ def _make_predict(
     variables: dict[str, str],
     response_field: str | None,
     error_field: str | None,
+    metadata_fields: list[str],
     timeout: int,
-) -> Callable[[Instance], str]:
-    def predict(instance: Instance) -> str:
+) -> Callable[[Instance], str | tuple[str, dict[str, str]]]:
+    def predict(instance: Instance) -> str | tuple[str, dict[str, str]]:
         ctx: dict[str, Any] = {
             **variables,
             "message": build_prompt(instance),
@@ -212,19 +281,27 @@ def _make_predict(
             headers=resolved_headers,
             method="POST",
         )
-        with urlopen(req, timeout=timeout) as resp:
+        with _opener.open(req, timeout=timeout) as resp:
             ctype = resp.headers.get("Content-Type", "")
             raw: str = resp.read().decode("utf-8")
 
-        if "application/json" in ctype:
+        metadata: dict[str, str] = {}
+        if "json" in ctype.lower():
             data = json.loads(raw)
-            if isinstance(data, dict):
-                if error_field and data.get(error_field):
-                    raise RuntimeError(str(data[error_field]))
-                if response_field:
-                    return str(_dig(data, response_field))
-                if "text" in data:
-                    return str(data["text"])
+            if isinstance(data, dict) and error_field and data.get(error_field):
+                raise RuntimeError(str(data[error_field]))
+            for field_path in metadata_fields:
+                try:
+                    metadata[field_path] = str(_dig(data, field_path))
+                except (KeyError, IndexError, TypeError, ValueError):
+                    pass
+            if response_field:
+                text = str(_dig(data, response_field))
+            elif isinstance(data, dict) and "text" in data:
+                text = str(data["text"])
+            else:
+                text = raw
+            return (text, metadata) if metadata_fields else text
         return raw
 
     return predict
@@ -240,6 +317,7 @@ def run_http(
     variables: dict[str, str] | None = None,
     response_field: str | None = None,
     error_field: str | None = None,
+    metadata_fields: list[str] | None = None,
     timeout: int = _REQUEST_TIMEOUT,
     max_concurrency: int = 8,
 ) -> list[Prediction]:
@@ -255,6 +333,7 @@ def run_http(
             variables or {},
             response_field,
             error_field,
+            metadata_fields or [],
             timeout,
         ),
         max_concurrency,
@@ -330,6 +409,20 @@ def main() -> None:
         type=str,
         default=None,
         help="JSON field that marks an error when set (preset default: error).",
+    )
+    parser.add_argument(
+        "--metadata_field",
+        type=str,
+        action="append",
+        default=[],
+        help="Dotted path to copy from the JSON response into prediction "
+        "metadata (repeatable; e.g. usage, steps).",
+    )
+    parser.add_argument(
+        "--allow_insecure_http",
+        action="store_true",
+        help="Allow http:// endpoints on non-local hosts (tokens go over "
+        "plaintext). Local hosts are always allowed.",
     )
     parser.add_argument(
         "--var",
@@ -418,7 +511,29 @@ def main() -> None:
     if error_field is None:
         error_field = "error"
 
+    metadata_fields = list(preset.metadata_fields) if preset else []
+    metadata_fields.extend(args.metadata_field)
+
     model_name = args.name or (preset.name if preset else "http-agent")
+
+    parsed = urlparse(endpoint)
+    if parsed.scheme == "http" and not (
+        _is_local_host(parsed.hostname or "") or args.allow_insecure_http
+    ):
+        console.print(
+            "[red]Refusing plaintext http:// endpoint on a non-local host "
+            "(bearer tokens and prompts would go over the wire unencrypted). "
+            "Use https:// or pass --allow_insecure_http.[/red]"
+        )
+        sys.exit(1)
+
+    missing = _required_vars(body_template, headers) - set(variables)
+    if missing:
+        console.print(
+            f"[red]Missing required template variables: "
+            f"{', '.join(sorted(missing))} — pass --var key=value.[/red]"
+        )
+        sys.exit(1)
 
     instances = load_instances(args.dataset)
     console.print(f"Loaded {len(instances)} instances")
@@ -434,6 +549,7 @@ def main() -> None:
             variables=variables,
             response_field=response_field,
             error_field=error_field,
+            metadata_fields=metadata_fields,
             timeout=args.timeout,
             max_concurrency=_max_concurrency(args.max_concurrency),
         )

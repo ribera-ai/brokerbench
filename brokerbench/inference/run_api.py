@@ -105,15 +105,17 @@ def _is_modern_claude(model_name: str) -> bool:
     return bool(_MODERN_CLAUDE_RE.search(model_name))
 
 
-def _call_with_retry(
-    fn: Callable[[], str],
+
+
+def _call_with_retry[T](
+    fn: Callable[[], T],
     attempts: int = 4,
     base_delay: float = 2.0,
-) -> str:
+) -> T:
     """Call ``fn`` with exponential backoff on transient failures.
 
     Args:
-        fn: Zero-arg callable returning the model's raw text output.
+        fn: Zero-arg callable returning the model's raw output.
         attempts: Total attempts before giving up.
         base_delay: Initial backoff in seconds (doubles each retry).
 
@@ -132,7 +134,12 @@ def _call_with_retry(
     raise last_error
 
 
-def _to_prediction(instance: Instance, model_name: str, raw_output: str) -> Prediction:
+def _to_prediction(
+    instance: Instance,
+    model_name: str,
+    raw_output: str,
+    metadata: dict[str, str] | None = None,
+) -> Prediction:
     """Build a Prediction from raw model output, extracting MCQ letters."""
     answer = raw_output
     if instance.choices:
@@ -145,6 +152,7 @@ def _to_prediction(instance: Instance, model_name: str, raw_output: str) -> Pred
         prediction=answer,
         reasoning=raw_output,
         raw_output=raw_output,
+        metadata=metadata or {},
     )
 
 
@@ -164,7 +172,7 @@ def _run_instances(
     instances: list[Instance],
     model_name: str,
     output_path: Path,
-    predict: Callable[[Instance], str],
+    predict: Callable[[Instance], str | tuple[str, dict[str, str]]],
     max_concurrency: int,
 ) -> list[Prediction]:
     """Run ``predict`` over all instances with bounded parallelism.
@@ -176,7 +184,8 @@ def _run_instances(
         instances: Benchmark instances to evaluate.
         model_name: Model identifier recorded on each prediction.
         output_path: Destination JSONL file.
-        predict: Callable returning the raw model text for one instance.
+        predict: Callable returning the raw model text for one instance —
+            or a ``(text, metadata)`` tuple merged into the prediction.
         max_concurrency: Maximum in-flight requests.
 
     Returns:
@@ -187,8 +196,11 @@ def _run_instances(
 
     def run_one(index: int, instance: Instance) -> Prediction:
         try:
-            raw_output = _call_with_retry(lambda: predict(instance))
-            return _to_prediction(instance, model_name, raw_output)
+            result: str | tuple[str, dict[str, str]] = _call_with_retry(
+                lambda: predict(instance)
+            )
+            raw_output, extra = result if isinstance(result, tuple) else (result, None)
+            return _to_prediction(instance, model_name, raw_output, extra)
         except Exception as e:
             console.print(f"[yellow]Error on {instance.instance_id}: {e}[/yellow]")
             return _error_prediction(instance, model_name, e)

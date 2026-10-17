@@ -68,6 +68,7 @@ def run_brokerbot(
         variables=variables,
         response_field=_PRESET.response_field,
         error_field=_PRESET.error_field,
+        metadata_fields=_PRESET.metadata_fields,
         max_concurrency=max_concurrency,
     )
 
