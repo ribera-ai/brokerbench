@@ -13,7 +13,6 @@ import pytest
 from brokerbench.harness.constants import Domain
 from brokerbench.harness.types import Instance
 from brokerbench.inference.run_http import (
-    PRESETS,
     _dig,
     _is_local_host,
     _make_predict,
@@ -284,33 +283,40 @@ class TestRunHttp:
         assert [x["instance_id"] for x in lines] == ["test-001", "test-002"]
 
 
-class TestBrokerbotPreset:
-    def test_preset_shape(self) -> None:
-        preset = PRESETS["brokerbot"]
+class TestBodyTemplateFile:
+    """A realistic multi-field agent body like a stored template file."""
+
+    TEMPLATE = {
+        "tenantId": "{tenant_id}",
+        "userId": "{user_id}",
+        "agentId": "{agent_id?}",
+        "channel": "{channel}",
+        "text": "{message}",
+        "requestId": "{message_id}",
+        "conversationId": "{chat_id}",
+    }
+
+    def test_required_and_builtin_fields(self) -> None:
         ctx = {
-            "team_id": "t",
+            "tenant_id": "t",
             "user_id": "u",
             "channel": "web",
             "message": "m",
             "message_id": "id",
             "chat_id": "c",
         }
-        body = _resolve_template(preset.body, ctx)
-        assert body == {
-            "teamId": "t",
+        assert _resolve_template(self.TEMPLATE, ctx) == {
+            "tenantId": "t",
             "userId": "u",
             "channel": "web",
-            "messageText": "m",
-            "messageId": "id",
-            "chatId": "c",
+            "text": "m",
+            "requestId": "id",
+            "conversationId": "c",
         }
-        headers = _resolve_template(preset.headers, ctx)
-        assert headers == {"Accept": "application/json"}
 
-    def test_preset_optional_fields(self) -> None:
-        preset = PRESETS["brokerbot"]
+    def test_optional_fields(self) -> None:
         ctx = {
-            "team_id": "t",
+            "tenant_id": "t",
             "user_id": "u",
             "agent_id": "a",
             "channel": "web",
@@ -319,7 +325,7 @@ class TestBrokerbotPreset:
             "message_id": "id",
             "chat_id": "c",
         }
-        body = _resolve_template(preset.body, ctx)
-        headers = _resolve_template(preset.headers, ctx)
+        body = _resolve_template(self.TEMPLATE, ctx)
+        headers = _resolve_template({"Authorization": "Bearer {auth_token?}"}, ctx)
         assert body["agentId"] == "a"
         assert headers["Authorization"] == "Bearer jwt"

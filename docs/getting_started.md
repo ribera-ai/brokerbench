@@ -73,21 +73,33 @@ uv run python -m brokerbench.inference.run_http \
     --output_file predictions/my-agent.jsonl
 ```
 
-### BrokerBot
+### Larger request shapes
 
-For BrokerBot's V2 agent gateway (`POST /generate`, channel pipeline),
-use the built-in preset — `run_brokerbot` is a convenience wrapper with
-the same flags:
+Store the body template in a file (`--body @agent-body.json`) when your
+endpoint needs more than a prompt field — placeholders and `$ENV`
+references resolve the same way:
+
+```json
+{
+  "tenantId": "{tenant_id}",
+  "text": "{message}",
+  "requestId": "{message_id}",
+  "conversationId": "{chat_id}"
+}
+```
 
 ```bash
-uv run python -m brokerbench.inference.run_brokerbot \
-    --agent_url http://localhost:4200/generate \
-    --team_id $TEAM_ID --user_id $USER_ID \
-    --agent_id $AGENT_ID --auth_token $JWT \
+uv run python -m brokerbench.inference.run_http \
+    --endpoint $AGENT_URL \
+    --body @agent-body.json \
+    --header 'Authorization: Bearer $AGENT_TOKEN' \
+    --var tenant_id=$TENANT_ID \
+    --response_field text \
+    --metadata_field attachments \
     --dataset all \
-    --output_file predictions/brokerbot.jsonl
+    --output_file predictions/my-agent.jsonl
 
 uv run python -m brokerbench.harness.run_evaluation \
-    --predictions_path predictions/brokerbot.jsonl \
-    --run_id brokerbot-eval
+    --predictions_path predictions/my-agent.jsonl \
+    --run_id my-agent-eval
 ```

@@ -153,22 +153,9 @@ uv run python -m brokerbench.inference.run_http \
     --output_file predictions/my-agent.jsonl
 ```
 
-### BrokerBot preset
-
-The built-in `brokerbot` preset targets the V2 agent gateway's
-`POST /generate` (the same channel pipeline Slack/SMS/web chat use). Auth
-is a Bearer JWT signed with `BETTER_AUTH_SECRET` or a Better Auth session
-token. `run_brokerbot` keeps the same flags as a convenience wrapper.
-
-```bash
-# Start the agent gateway locally (from the brokerbot monorepo), then:
-uv run python -m brokerbench.inference.run_http \
-    --preset brokerbot \
-    --var team_id=$TEAM_ID --var user_id=$USER_ID \
-    --var agent_id=$AGENT_ID --var auth_token=$JWT \
-    --dataset all \
-    --output_file predictions/brokerbot.jsonl
-```
+Larger request shapes can live in a template file — `--body
+@my-agent-body.json` — with the same `{placeholder}` and `$ENV`
+substitution rules.
 
 ## Custom Agents
 

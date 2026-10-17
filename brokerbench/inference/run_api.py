@@ -105,8 +105,6 @@ def _is_modern_claude(model_name: str) -> bool:
     return bool(_MODERN_CLAUDE_RE.search(model_name))
 
 
-
-
 def _call_with_retry[T](
     fn: Callable[[], T],
     attempts: int = 4,
@@ -196,9 +194,7 @@ def _run_instances(
 
     def run_one(index: int, instance: Instance) -> Prediction:
         try:
-            result: str | tuple[str, dict[str, str]] = _call_with_retry(
-                lambda: predict(instance)
-            )
+            result: str | tuple[str, dict[str, str]] = _call_with_retry(lambda: predict(instance))
             raw_output, extra = result if isinstance(result, tuple) else (result, None)
             return _to_prediction(instance, model_name, raw_output, extra)
         except Exception as e:
