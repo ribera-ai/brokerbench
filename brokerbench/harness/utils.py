@@ -11,7 +11,8 @@ import re
 _MCQ_PATTERNS: list[re.Pattern[str]] = [
     # Markdown-bold letter at the start: **B**, **B.**, **B)**
     re.compile(r"^\s*\*\*([A-Da-d])\*\*", re.MULTILINE),
-    re.compile(r"^\s*([A-Da-d])\s*[\.\)\:]", re.MULTILINE),
+    # Letter at line start followed by a separator: "B.", "B)", "B:", "B -", "B —"
+    re.compile(r"^\s*([A-Da-d])\s*[\.\)\:\-—]", re.MULTILINE),
     re.compile(r"^\s*([A-Da-d])\s*$", re.MULTILINE),
     re.compile(
         r"(?:answer|choice|option)\s*(?:is|:)\s*\*?\*?([A-Da-d])\*?\*?",

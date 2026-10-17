@@ -57,13 +57,33 @@ The report includes:
 - Per-scorer breakdown
 - Instance-level results in JSON format
 
-## Evaluating BrokerBot
+## Evaluating an Agent Endpoint
 
-If you have the BrokerBot monorepo running locally:
+`run_http` runs the bench against any agent that accepts a JSON POST —
+the request body is a template (`{message}` is the prompt; `{key}` comes
+from `--var`, `{key?}` drops when unset) and `--response_field` picks the
+answer text out of the JSON response.
+
+```bash
+uv run python -m brokerbench.inference.run_http \
+    --endpoint http://localhost:8080/chat \
+    --body '{"input": "{message}"}' \
+    --response_field text \
+    --dataset all \
+    --output_file predictions/my-agent.jsonl
+```
+
+### BrokerBot
+
+For BrokerBot's V2 agent gateway (`POST /generate`, channel pipeline),
+use the built-in preset — `run_brokerbot` is a convenience wrapper with
+the same flags:
 
 ```bash
 uv run python -m brokerbench.inference.run_brokerbot \
-    --agent_url http://localhost:3000/api/agent \
+    --agent_url http://localhost:4200/generate \
+    --team_id $TEAM_ID --user_id $USER_ID \
+    --agent_id $AGENT_ID --auth_token $JWT \
     --dataset all \
     --output_file predictions/brokerbot.jsonl
 

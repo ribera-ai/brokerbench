@@ -135,13 +135,37 @@ any cross-model comparison — in particular the answer-position
 shuffle and the naive baseline floors that every real-model score
 should clear.
 
-## Running Against BrokerBot
+## Running Against Any Agent Endpoint
+
+`run_http` points the bench at any agent that accepts a JSON POST. The
+request body is a template — `{message}` is the benchmark prompt;
+`{message_id}`, `{chat_id}`, `{instance_id}` are generated per request;
+any other `{key}` is filled from `--var key=value`, and `{key?}` drops the
+field when unset. `$ENV` references expand in templates and headers.
 
 ```bash
-# Start BrokerBot locally (from monorepo)
-# Then run BrokerBench against it
-uv run python -m brokerbench.inference.run_brokerbot \
-    --agent_url http://localhost:3000/api/agent \
+uv run python -m brokerbench.inference.run_http \
+    --endpoint http://localhost:8080/chat \
+    --body '{"input": "{message}"}' \
+    --header 'Authorization: Bearer $MY_AGENT_TOKEN' \
+    --response_field text \
+    --dataset all \
+    --output_file predictions/my-agent.jsonl
+```
+
+### BrokerBot preset
+
+The built-in `brokerbot` preset targets the V2 agent gateway's
+`POST /generate` (the same channel pipeline Slack/SMS/web chat use). Auth
+is a Bearer JWT signed with `BETTER_AUTH_SECRET` or a Better Auth session
+token. `run_brokerbot` keeps the same flags as a convenience wrapper.
+
+```bash
+# Start the agent gateway locally (from the brokerbot monorepo), then:
+uv run python -m brokerbench.inference.run_http \
+    --preset brokerbot \
+    --var team_id=$TEAM_ID --var user_id=$USER_ID \
+    --var agent_id=$AGENT_ID --var auth_token=$JWT \
     --dataset all \
     --output_file predictions/brokerbot.jsonl
 ```
