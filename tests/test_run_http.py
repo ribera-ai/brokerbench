@@ -247,7 +247,8 @@ class TestPredict:
         assert isinstance(result, tuple)
         text, metadata = result
         assert text == "A"
-        assert metadata == {"usage": "{'tokens': 7}"}
+        assert metadata == {"usage": '{"tokens": 7}'}
+        assert json.loads(metadata["usage"]) == {"tokens": 7}
 
 
 class TestGuards:
@@ -256,11 +257,104 @@ class TestGuards:
         headers = {"X": "{api_key}"}
         assert _required_vars(body, headers) == {"team_id", "api_key"}
 
+    def test_required_vars_ignores_env_refs(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("MY_TOKEN", "abc")
+        monkeypatch.setenv("OTHER", "x")
+        body = {"a": "${MY_TOKEN}", "b": "$OTHER", "c": "{real_var}"}
+        assert _required_vars(body) == {"real_var"}
+
     def test_is_local_host(self) -> None:
         for host in ["localhost", "127.0.0.1", "::1", "db.localtest.me"]:
             assert _is_local_host(host)
-        for host in ["api.example.com", "8.8.8.8"]:
+        for host in ["api.example.com", "8.8.8.8", "10.0.0.5", "192.168.1.1", "172.16.0.1"]:
             assert not _is_local_host(host)
+
+
+class _RedirectHandler(BaseHTTPRequestHandler):
+    """302 to a configurable Location, or a JSON sink capturing headers."""
+
+    location: str | None = None
+    seen: list[dict[str, Any]] = []
+
+    def _capture(self) -> None:
+        _RedirectHandler.seen.append(
+            {
+                "auth": self.headers.get("Authorization"),
+                "cookie": self.headers.get("Cookie"),
+                "keep": self.headers.get("X-Keep"),
+            }
+        )
+        raw = json.dumps({"text": "A"}).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(raw)))
+        self.end_headers()
+        self.wfile.write(raw)
+
+    def do_POST(self) -> None:  # noqa: N802
+        self.rfile.read(int(self.headers.get("Content-Length", 0)))
+        if _RedirectHandler.location:
+            self.send_response(302)
+            self.send_header("Location", _RedirectHandler.location)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+        else:
+            self._capture()
+
+    def do_GET(self) -> None:  # noqa: N802
+        self._capture()
+
+    def log_message(self, *args: Any) -> None:
+        pass
+
+
+@pytest.fixture()
+def redirect_server() -> Any:
+    _RedirectHandler.seen = []
+    _RedirectHandler.location = None
+    server = ThreadingHTTPServer(("127.0.0.1", 0), _RedirectHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    yield f"http://127.0.0.1:{server.server_address[1]}"
+    server.shutdown()
+
+
+class TestRedirect:
+    def test_cross_host_redirect_strips_sensitive_headers(self, redirect_server: str) -> None:
+        # localhost and 127.0.0.1 differ in netloc -> credentials must not
+        # follow the redirect, while unrelated headers survive.
+        _RedirectHandler.location = f"{redirect_server.replace('127.0.0.1', 'localhost')}/done"
+        predict = _make_predict(
+            endpoint=f"{redirect_server}/start",
+            body_template={"input": "{message}"},
+            headers={
+                "Authorization": "Bearer secret",
+                "Cookie": "session=abc",
+                "X-Keep": "yes",
+            },
+            variables={},
+            response_field="text",
+            error_field="error",
+            metadata_fields=[],
+            timeout=30,
+        )
+        assert predict(_instance()) == "A"
+        assert _RedirectHandler.seen == [{"auth": None, "cookie": None, "keep": "yes"}]
+
+    def test_same_host_redirect_keeps_headers(self, redirect_server: str) -> None:
+        _RedirectHandler.location = f"{redirect_server}/done"
+        predict = _make_predict(
+            endpoint=f"{redirect_server}/start",
+            body_template={"input": "{message}"},
+            headers={"Authorization": "Bearer secret"},
+            variables={},
+            response_field="text",
+            error_field="error",
+            metadata_fields=[],
+            timeout=30,
+        )
+        assert predict(_instance()) == "A"
+        assert _RedirectHandler.seen[0]["auth"] == "Bearer secret"
 
 
 class TestRunHttp:

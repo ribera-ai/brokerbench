@@ -145,7 +145,9 @@ def _required_vars(*templates: Any) -> set[str]:
             for v in obj:
                 walk(v)
         elif isinstance(obj, str):
-            for m in _PLACEHOLDER_RE.finditer(obj):
+            # Env refs ($VAR/${VAR}) expand at render time — scan the
+            # expanded text so they are not demanded as --var variables.
+            for m in _PLACEHOLDER_RE.finditer(os.path.expandvars(obj)):
                 if not m.group(0).endswith("?}") and m.group(1) not in _BUILTIN_VARS:
                     out.add(m.group(1))
 
@@ -155,7 +157,12 @@ def _required_vars(*templates: Any) -> set[str]:
 
 
 def _is_local_host(hostname: str) -> bool:
-    """Whether a host resolves locally (loopback/private or localtest.dev)."""
+    """Whether a host is loopback-only (localhost, 127/8, ::1, localtest.me).
+
+    Private-network addresses (10/8, 192.168/16, …) are not local: requests
+    to them still cross a network in plaintext, so they require
+    ``--allow_insecure_http`` like any remote host.
+    """
     host = hostname.lower()
     if host in {"localhost", "ip6-localhost"} or host.endswith(".localtest.me"):
         return True
@@ -163,7 +170,7 @@ def _is_local_host(hostname: str) -> bool:
         ip = ipaddress.ip_address(host)
     except ValueError:
         return False
-    return ip.is_loopback or ip.is_private
+    return ip.is_loopback
 
 
 class _SensitiveHeaderRedirectHandler(HTTPRedirectHandler):
@@ -230,7 +237,8 @@ def _make_predict(
                 raise RuntimeError(str(data[error_field]))
             for field_path in metadata_fields:
                 try:
-                    metadata[field_path] = str(_dig(data, field_path))
+                    dug = _dig(data, field_path)
+                    metadata[field_path] = dug if isinstance(dug, str) else json.dumps(dug)
                 except (KeyError, IndexError, TypeError, ValueError):
                     pass
             if response_field:
