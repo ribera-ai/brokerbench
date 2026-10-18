@@ -57,17 +57,49 @@ The report includes:
 - Per-scorer breakdown
 - Instance-level results in JSON format
 
-## Evaluating BrokerBot
+## Evaluating an Agent Endpoint
 
-If you have the BrokerBot monorepo running locally:
+`run_http` runs the bench against any agent that accepts a JSON POST —
+the request body is a template (`{message}` is the prompt; `{key}` comes
+from `--var`, `{key?}` drops when unset) and `--response_field` picks the
+answer text out of the JSON response.
 
 ```bash
-uv run python -m brokerbench.inference.run_brokerbot \
-    --agent_url http://localhost:3000/api/agent \
+uv run python -m brokerbench.inference.run_http \
+    --endpoint http://localhost:8080/chat \
+    --body '{"input": "{message}"}' \
+    --response_field text \
     --dataset all \
-    --output_file predictions/brokerbot.jsonl
+    --output_file predictions/my-agent.jsonl
+```
+
+### Larger request shapes
+
+Store the body template in a file (`--body @agent-body.json`) when your
+endpoint needs more than a prompt field — placeholders and `$ENV`
+references resolve the same way:
+
+```json
+{
+  "tenantId": "{tenant_id}",
+  "text": "{message}",
+  "requestId": "{message_id}",
+  "conversationId": "{chat_id}"
+}
+```
+
+```bash
+uv run python -m brokerbench.inference.run_http \
+    --endpoint $AGENT_URL \
+    --body @agent-body.json \
+    --header 'Authorization: Bearer $AGENT_TOKEN' \
+    --var tenant_id=$TENANT_ID \
+    --response_field text \
+    --metadata_field attachments \
+    --dataset all \
+    --output_file predictions/my-agent.jsonl
 
 uv run python -m brokerbench.harness.run_evaluation \
-    --predictions_path predictions/brokerbot.jsonl \
-    --run_id brokerbot-eval
+    --predictions_path predictions/my-agent.jsonl \
+    --run_id my-agent-eval
 ```

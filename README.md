@@ -135,16 +135,27 @@ any cross-model comparison — in particular the answer-position
 shuffle and the naive baseline floors that every real-model score
 should clear.
 
-## Running Against BrokerBot
+## Running Against Any Agent Endpoint
+
+`run_http` points the bench at any agent that accepts a JSON POST. The
+request body is a template — `{message}` is the benchmark prompt;
+`{message_id}`, `{chat_id}`, `{instance_id}` are generated per request;
+any other `{key}` is filled from `--var key=value`, and `{key?}` drops the
+field when unset. `$ENV` references expand in templates and headers.
 
 ```bash
-# Start BrokerBot locally (from monorepo)
-# Then run BrokerBench against it
-uv run python -m brokerbench.inference.run_brokerbot \
-    --agent_url http://localhost:3000/api/agent \
+uv run python -m brokerbench.inference.run_http \
+    --endpoint http://localhost:8080/chat \
+    --body '{"input": "{message}"}' \
+    --header 'Authorization: Bearer $MY_AGENT_TOKEN' \
+    --response_field text \
     --dataset all \
-    --output_file predictions/brokerbot.jsonl
+    --output_file predictions/my-agent.jsonl
 ```
+
+Larger request shapes can live in a template file — `--body
+@my-agent-body.json` — with the same `{placeholder}` and `$ENV`
+substitution rules.
 
 ## Custom Agents
 

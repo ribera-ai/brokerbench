@@ -48,6 +48,16 @@ class TestExtractMcqAnswer:
         result = extract_mcq_answer("Due to the contract terms, the answer is A.")
         assert result == "A"
 
+    def test_letter_with_em_dash_explanation(self) -> None:
+        assert extract_mcq_answer("B — the degree of control is the test.") == "B"
+
+    def test_letter_with_hyphen_explanation(self) -> None:
+        assert extract_mcq_answer("B - the degree of control is the test.") == "B"
+
+    def test_hyphenated_word_does_not_match(self) -> None:
+        result = extract_mcq_answer("A-frame construction is common. The answer is B.")
+        assert result == "B"
+
     # --- Letter on its own line ---
 
     def test_letter_on_own_line(self) -> None:
