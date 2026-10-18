@@ -46,7 +46,7 @@ class RateLimiter:
         return self._rpm
 
 
-def run_batch(
+def run_batch[T, R](
     items: list[T],
     func: Callable[[T], R],
     rate_limiter: RateLimiter | None = None,

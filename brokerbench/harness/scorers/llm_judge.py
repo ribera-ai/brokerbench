@@ -20,7 +20,9 @@ from brokerbench.harness.grading import ScoreDetail
 logger = logging.getLogger(__name__)
 
 # Default model used for LLM-judge scoring when OPENROUTER_API_KEY is set.
-_DEFAULT_JUDGE_MODEL = "openai/gpt-4o-mini"
+# A cheap non-reasoning model — the judge returns ~50 tokens of JSON, so
+# reasoning effort would only add latency and truncate against max_tokens.
+_DEFAULT_JUDGE_MODEL = "google/gemini-3.8-flash"
 
 
 def _call_openrouter(

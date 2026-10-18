@@ -1,9 +1,9 @@
 """Constants, enums, and thresholds for BrokerBench evaluation."""
 
-from enum import Enum
+from enum import StrEnum
 
 
-class Domain(str, Enum):
+class Domain(StrEnum):
     """Benchmark domains."""
 
     LICENSING = "licensing"
@@ -16,7 +16,7 @@ class Domain(str, Enum):
     CLIENT_ADVISORY = "client_advisory"
 
 
-class CognitiveLevel(str, Enum):
+class CognitiveLevel(StrEnum):
     """Cognitive levels for licensing exam questions (Bloom's taxonomy)."""
 
     KNOWLEDGE = "knowledge"
@@ -25,14 +25,14 @@ class CognitiveLevel(str, Enum):
     EXPERT = "expert"
 
 
-class ExamType(str, Enum):
+class ExamType(StrEnum):
     """Licensing exam variants."""
 
     SALESPERSON = "salesperson"
     BROKER = "broker"
 
 
-class ResolutionStatus(str, Enum):
+class ResolutionStatus(StrEnum):
     """Whether a prediction resolved the instance correctly."""
 
     RESOLVED = "resolved"

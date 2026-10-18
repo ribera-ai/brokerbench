@@ -16,41 +16,50 @@ BrokerBench measures how well AI agents handle real estate tasks across four dom
 ## Quick Start
 
 ```bash
-# Install
+# Install (uv — https://docs.astral.sh/uv/)
 git clone https://github.com/ribera-ai/brokerbench.git
 cd brokerbench
-pip install -e .
+uv sync
 
 # Run inference against a model (OpenAI, Anthropic, Google, or OpenRouter)
-python -m brokerbench.inference.run_api \
-    --model_name gpt-4o \
+uv run python -m brokerbench.inference.run_api \
+    --model_name gpt-5.5 \
     --dataset all \
-    --output_file predictions/gpt-4o.jsonl \
+    --output_file predictions/gpt-5.5.jsonl \
     --provider openai
 
 # Run Gemini models directly
-GEMINI_API_KEY=... python -m brokerbench.inference.run_api \
-    --model_name gemini-2.5-pro \
+GEMINI_API_KEY=... uv run python -m brokerbench.inference.run_api \
+    --model_name gemini-4-argon \
     --dataset all \
-    --output_file predictions/gemini-2.5-pro.jsonl \
+    --output_file predictions/gemini-4-argon.jsonl \
     --provider google
 
 # Or use OpenRouter to access any model
-OPENROUTER_API_KEY=sk-or-... python -m brokerbench.inference.run_api \
-    --model_name openai/gpt-4o \
+OPENROUTER_API_KEY=sk-or-... uv run python -m brokerbench.inference.run_api \
+    --model_name openai/gpt-5.5 \
     --dataset all \
-    --output_file predictions/gpt-4o-or.jsonl \
+    --output_file predictions/gpt-5.5-or.jsonl \
     --provider openrouter
 
 # Evaluate predictions
-python -m brokerbench.harness.run_evaluation \
-    --predictions_path predictions/gpt-4o.jsonl \
+uv run python -m brokerbench.harness.run_evaluation \
+    --predictions_path predictions/gpt-5.5.jsonl \
     --dataset_name all \
     --run_id my-eval-run
 
 # View report
 cat logs/run_evaluation/my-eval-run/report.md
 ```
+
+Requests run with bounded parallelism (`--max_concurrency`, default 8;
+`BROKERBENCH_MAX_CONCURRENCY` also works). Output files are always
+written in dataset order regardless of completion order.
+
+Reasoning models (GPT-5/6, Claude 4.6+/5.x, Gemini 3/4) are called
+without `temperature` and get a 4096-token output budget by default —
+raise it with `BROKERBENCH_MAX_TOKENS` if a deep-thinking model
+truncates.
 
 ## Architecture
 
@@ -92,35 +101,61 @@ Run all frontier models to establish baseline scores:
 export OPENAI_API_KEY=...
 export ANTHROPIC_API_KEY=...
 export GEMINI_API_KEY=...
+export OPENROUTER_API_KEY=...   # used for the newer frontier models
 
-# Run all baselines (Claude Sonnet 4, Claude Opus 4, Gemini 2.5 Pro, GPT-4o, GPT-5)
+# Naive baselines first (always-A/B/C/D, uniform-random, most-common)
+./scripts/run_baselines.sh naive
+
+# Then real models
 ./scripts/run_baselines.sh
 
 # Or run a single model
-./scripts/run_baselines.sh gemini-2.5-pro
+./scripts/run_baselines.sh gemini-4-argon
+./scripts/run_baselines.sh anthropic/claude-fable-5.1
 
 # View results
 ls logs/run_evaluation/
 ```
 
-| Provider | Model | CLI |
-|----------|-------|-----|
-| Anthropic | `claude-sonnet-4-20250514` | `--provider anthropic` |
-| Anthropic | `claude-opus-4-20250514` | `--provider anthropic` |
-| Google | `gemini-2.5-pro` | `--provider google` |
-| OpenAI | `gpt-4o` | `--provider openai` |
-| OpenAI | `gpt-5` | `--provider openai` |
+| Provider   | Model                              | CLI                         |
+|------------|------------------------------------|-----------------------------|
+| Anthropic  | `claude-sonnet-5-5`                | `--provider anthropic`      |
+| Anthropic  | `claude-opus-5-5`                  | `--provider anthropic`      |
+| Google     | `gemini-4-argon`                   | `--provider google`         |
+| OpenAI     | `gpt-5.5`                          | `--provider openai`         |
+| OpenAI     | `gpt-6.1-sol`                      | `--provider openai`         |
+| OpenRouter | `anthropic/claude-fable-5.1`       | `--provider openrouter`     |
+| OpenRouter | `google/gemini-3.1-pro-preview`    | `--provider openrouter`     |
+| OpenRouter | `moonshotai/kimi-k3`               | `--provider openrouter`     |
+| OpenRouter | `mistralai/mistral-large-2512`     | `--provider openrouter`     |
+| OpenRouter | `x-ai/grok-4.7`                    | `--provider openrouter`     |
 
-## Running Against BrokerBot
+Read [`docs/methodology.md`](docs/methodology.md) before publishing
+any cross-model comparison — in particular the answer-position
+shuffle and the naive baseline floors that every real-model score
+should clear.
+
+## Running Against Any Agent Endpoint
+
+`run_http` points the bench at any agent that accepts a JSON POST. The
+request body is a template — `{message}` is the benchmark prompt;
+`{message_id}`, `{chat_id}`, `{instance_id}` are generated per request;
+any other `{key}` is filled from `--var key=value`, and `{key?}` drops the
+field when unset. `$ENV` references expand in templates and headers.
 
 ```bash
-# Start BrokerBot locally (from monorepo)
-# Then run BrokerBench against it
-python -m brokerbench.inference.run_brokerbot \
-    --agent_url http://localhost:3000/api/agent \
+uv run python -m brokerbench.inference.run_http \
+    --endpoint http://localhost:8080/chat \
+    --body '{"input": "{message}"}' \
+    --header 'Authorization: Bearer $MY_AGENT_TOKEN' \
+    --response_field text \
     --dataset all \
-    --output_file predictions/brokerbot.jsonl
+    --output_file predictions/my-agent.jsonl
 ```
+
+Larger request shapes can live in a template file — `--body
+@my-agent-body.json` — with the same `{placeholder}` and `$ENV`
+substitution rules.
 
 ## Custom Agents
 
@@ -147,17 +182,17 @@ adapter.run_benchmark(dataset_path="all", output_path=Path("predictions.jsonl"))
 ## Development
 
 ```bash
-# Install with dev dependencies
-pip install -e ".[dev]"
+# Install everything (uv sync includes the dev group by default)
+uv sync
 
 # Run tests
-pytest tests/ -v
+uv run pytest tests/ -v
 
 # Lint
-ruff check brokerbench/ tests/
+uv run ruff check brokerbench/ tests/
 
 # Type check
-mypy brokerbench/
+uv run mypy brokerbench/
 ```
 
 ## License

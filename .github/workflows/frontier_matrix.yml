@@ -1,0 +1,125 @@
+name: Frontier Matrix Benchmark
+
+# Runs every requested frontier model in parallel against the full
+# BrokerBench dataset.  Useful for periodic head-to-head reports.
+#
+# Non-anchor models are routed through OpenRouter so a single
+# OPENROUTER_API_KEY secret unlocks the wider matrix.  Anchor models
+# still use their native providers for parity with public scores.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dataset:
+        description: "Dataset to evaluate (e.g. all, licensing)"
+        required: true
+        default: "all"
+  schedule:
+    # Run every Sunday at 02:00 UTC (offset from the single-model
+    # Benchmark Run workflow at 00:00 UTC).
+    - cron: "0 2 * * 0"
+
+jobs:
+  frontier:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Anchor models for trend tracking
+          - model: "claude-sonnet-5-5"
+            provider: "anthropic"
+          - model: "claude-opus-5-5"
+            provider: "anthropic"
+          - model: "gemini-4-argon"
+            provider: "google"
+          - model: "gpt-5.5"
+            provider: "openai"
+          - model: "gpt-6.1-sol"
+            provider: "openai"
+          # Additional frontier models via OpenRouter
+          - model: "anthropic/claude-fable-5.1"
+            provider: "openrouter"
+          - model: "google/gemini-3.1-pro-preview"
+            provider: "openrouter"
+          - model: "moonshotai/kimi-k3"
+            provider: "openrouter"
+          - model: "mistralai/mistral-large-2512"
+            provider: "openrouter"
+          - model: "x-ai/grok-4.7"
+            provider: "openrouter"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --frozen --no-dev
+      - name: Run inference
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          DATASET: ${{ github.event.inputs.dataset || 'all' }}
+        run: |
+          safe_name=$(echo "${{ matrix.model }}" | tr '/' '_')
+          uv run python -m brokerbench.inference.run_api \
+            --model_name "${{ matrix.model }}" \
+            --dataset "$DATASET" \
+            --output_file "predictions/${safe_name}.jsonl" \
+            --provider "${{ matrix.provider }}"
+      - name: Run evaluation
+        env:
+          DATASET: ${{ github.event.inputs.dataset || 'all' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          safe_name=$(echo "${{ matrix.model }}" | tr '/' '_')
+          uv run python -m brokerbench.harness.run_evaluation \
+            --predictions_path "predictions/${safe_name}.jsonl" \
+            --dataset_name "$DATASET" \
+            --run_id "${safe_name}-${{ github.run_id }}"
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontier-${{ matrix.model }}-${{ github.run_id }}
+          path: |
+            logs/run_evaluation/
+            predictions/
+        if: always()
+
+  naive_baselines:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --frozen --no-dev
+      - name: Generate naive predictions and grade them
+        env:
+          DATASET: ${{ github.event.inputs.dataset || 'all' }}
+        run: |
+          mkdir -p predictions/_naive
+          uv run python -m brokerbench.inference.run_baseline \
+            --strategy all \
+            --dataset "$DATASET" \
+            --output_file predictions/_naive
+          for f in predictions/_naive/*.jsonl; do
+            strat=$(basename "$f" .jsonl)
+            uv run python -m brokerbench.harness.run_evaluation \
+              --predictions_path "$f" \
+              --dataset_name "$DATASET" \
+              --run_id "naive-${strat}-${{ github.run_id }}"
+          done
+      - name: Upload naive baseline results
+        uses: actions/upload-artifact@v4
+        with:
+          name: naive-baselines-${{ github.run_id }}
+          path: |
+            logs/run_evaluation/
+            predictions/_naive/
+        if: always()

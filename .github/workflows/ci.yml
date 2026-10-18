@@ -11,42 +11,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.12"
+          enable-cache: true
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: uv sync --frozen
       - name: Run ruff (lint)
-        run: ruff check brokerbench/ tests/
+        run: uv run ruff check brokerbench/ tests/
       - name: Run ruff (format check)
-        run: ruff format --check brokerbench/ tests/
+        run: uv run ruff format --check brokerbench/ tests/
 
   typecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.12"
+          enable-cache: true
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: uv sync --frozen
       - name: Run mypy
-        run: mypy brokerbench/
+        run: uv run mypy brokerbench/
 
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: ${{ matrix.python-version }}
+          enable-cache: true
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: uv sync --frozen --python ${{ matrix.python-version }}
       - name: Run tests
-        run: pytest tests/ -v --tb=short
+        run: uv run pytest tests/ -v --tb=short

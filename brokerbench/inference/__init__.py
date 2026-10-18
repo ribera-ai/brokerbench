@@ -8,6 +8,7 @@ from pathlib import Path
 
 from rich.console import Console
 
+from brokerbench.harness.shuffle import shuffle_instances, shuffling_enabled
 from brokerbench.harness.types import Instance
 
 console = Console()
@@ -15,6 +16,10 @@ console = Console()
 
 def load_instances(dataset_path: str) -> list[Instance]:
     """Load benchmark instances from a JSONL file or all built-in datasets.
+
+    MCQ choices are deterministically shuffled at load time to remove
+    answer-position bias from the raw datasets.  Disable by exporting
+    ``BROKERBENCH_SHUFFLE_CHOICES=0``.
 
     Args:
         dataset_path: Path to a JSONL file, or ``"all"`` to load every
@@ -32,7 +37,7 @@ def load_instances(dataset_path: str) -> list[Instance]:
                     line = line.strip()
                     if line:
                         instances.append(Instance(**json.loads(line)))
-        return instances
+        return _maybe_shuffle(instances)
 
     path = Path(dataset_path)
     # If the path doesn't exist as-is, try resolving as a dataset name
@@ -51,6 +56,13 @@ def load_instances(dataset_path: str) -> list[Instance]:
             line = line.strip()
             if line:
                 instances.append(Instance(**json.loads(line)))
+    return _maybe_shuffle(instances)
+
+
+def _maybe_shuffle(instances: list[Instance]) -> list[Instance]:
+    """Apply deterministic answer shuffling unless explicitly disabled."""
+    if shuffling_enabled():
+        return shuffle_instances(instances)
     return instances
 
 
